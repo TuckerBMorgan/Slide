@@ -32,8 +32,6 @@ public class GridController : MonoBehaviour
             }
         }
         Singelton = this;
-        var playerGo = Instantiate(TestPlayerGameObject);
-        playerGo.transform.position = new Vector3(0, 0, 0);
     }
 
     public Tile GetTile(int x, int y)

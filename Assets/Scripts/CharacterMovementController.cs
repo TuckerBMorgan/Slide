@@ -10,13 +10,6 @@ public class CharacterMovementController : MonoBehaviour{
 	// Use this for initialization
 	void Start () {
         currentMovementState = new Idle(this);
-
-	    var testPath = GridController.Singelton.FindPathToUnit(GridController.Singelton.GetTile(0, 0),
-	        GridController.Singelton.GetTile(5, 5));
-
-
-	    ((Idle)currentMovementState).MoveToPoint(testPath);
-
 	}
 	
 	// Update is called once per frame
