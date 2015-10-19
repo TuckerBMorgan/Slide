@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 public class GridController : MonoBehaviour
 {
@@ -11,7 +12,7 @@ public class GridController : MonoBehaviour
 
     public static GridController Singelton;
 
-    void Awake()
+    private void Awake()
     {
         _grid = new Tile[sizeOfArray][];
         var pos = new Vector3();
@@ -36,9 +37,33 @@ public class GridController : MonoBehaviour
 
     public Tile GetTile(int x, int y)
     {
-      return  _grid[x][y];
+        return _grid[x][y];
     }
+
+    public List<RuneManager.MoveEvent> GetRunedPath(SlideCharacter slideCharacter, Tile start, Tile end)
+    {
+
+        var path = FindPathToUnit(start, end);
+        var moves = new List<RuneManager.MoveEvent>();
+        var previous = path[0];
+        for (var i = 1; i < path.Count; i++)
+        {
+            if (path[i] == end)
+            {
+
+                var move_ = new RuneManager.MoveEvent(slideCharacter, previous, path[i]);
+                moves.Add(move_);
+                return moves;
     
+            }
+
+            var move = new RuneManager.MoveEvent(slideCharacter, previous, path[i]);
+            moves.Add(move);
+            previous = path[i];
+        }
+        return moves;
+    }
+
     public static int FindLowest(List<Tile> tiles)
     {
         if (tiles.Count < 0)

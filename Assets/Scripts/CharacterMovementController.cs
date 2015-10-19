@@ -4,18 +4,24 @@ using System.Collections.Generic;
 public class CharacterMovementController : MonoBehaviour{
     
     private MovementState currentMovementState;
+    public string MoveState;
 
     public static float Epsilon = 0.003f;
 
 	// Use this for initialization
 	void Start () {
-        currentMovementState = new Idle(this);
 	}
 	
 	// Update is called once per frame
 	void Update () {
         currentMovementState.Update();
+	    MoveState = currentMovementState.ToString().Replace("CharacterMovementController", "");
 	}
+
+    public void SetMoveTargetAndGo(Tile target, System.Action action)
+    {
+        currentMovementState = new OnTheMove(this, target, action);
+    }
 
     public class MovementState
     {
@@ -54,6 +60,8 @@ public class CharacterMovementController : MonoBehaviour{
         private Tile _currentTargetTile;
         private Vector3 _moveDirection;
         private float _distance;
+        public System.Action act;
+
 
         public OnTheMove(CharacterMovementController characterController, List<Tile> path) :
             base(characterController)
@@ -61,9 +69,16 @@ public class CharacterMovementController : MonoBehaviour{
             _path = path;
         }
 
+        public OnTheMove(CharacterMovementController characterMovementController, Tile start, System.Action action)
+            : base(characterMovementController)
+        {
+            _path = new List<Tile>() {start};
+            act = action;
+        }
+
         public override void Update()
         {
-            if (_path.Count > 0)
+            if (_path.Count > 0 || _currentTargetTile != null)
             {
                 if (_currentTargetTile == null)
                 {
@@ -84,6 +99,16 @@ public class CharacterMovementController : MonoBehaviour{
                     {
                         CharacterMovementController.transform.position = new Vector3(_currentTargetTile.X, 0, _currentTargetTile.Y);
                         _currentTargetTile = null;
+                        if (_path.Count == 0)
+                        {
+                            CharacterMovementController.currentMovementState = new Idle(CharacterMovementController);
+                            if (act != null)
+                            {
+                                print("Fired action");
+                                act();
+                            }
+                        }
+
                     }
                 }
             }

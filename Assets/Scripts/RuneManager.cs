@@ -1,7 +1,9 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Messaging;
+using UnityEditor;
 
 
 public class RuneManager : MonoBehaviour
@@ -9,36 +11,68 @@ public class RuneManager : MonoBehaviour
     
     public List<Rune> gameRunes;
 
-    private Dictionary<Type, List<Action<Rune>>> runeEvents;
+    public Queue<Rune> runePump; 
+
+    private Dictionary<Type, List<Action<Rune, Action>>> runeEvents;
 
     public static RuneManager Singelton;
+
+    public int currentCallbacks;
 
     void Awake()
     {
         Singelton = this;
-        runeEvents = new Dictionary<Type, List<Action<Rune>>>();
+        runeEvents = new Dictionary<Type, List<Action<Rune, Action>>>();
         gameRunes = new List<Rune>();
-
-        
+        currentCallbacks = 0;
+        runePump = new Queue<Rune>();
     }
 
     public void ExecuteRune(Rune rune)
     {
-        var type = rune.GetType();
-        for (var i = 0; i < runeEvents[type].Count; i++)
+        runePump.Enqueue(rune);
+        if (currentCallbacks == 0)
         {
-            runeEvents[type][i].Invoke(rune);
+            PumpRuneQue();
+        }
+    }
+
+    void PumpRuneQue()
+    {
+        var rune = runePump.Dequeue();
+
+        for (var i = 0; i < runeEvents[rune.GetType()].Count; i++)
+        {
+            CallbackNumberUp();
+            runeEvents[rune.GetType()][i].Invoke(rune, CallbackNumberDown);
         }
         RecordAllRune(rune);
     }
 
-    public void AddListener(Type type, Action<Rune> action)
+
+    public void AddListener(Type type, Action<Rune, Action> action)
     {
         if (!runeEvents.ContainsKey(type))
-            runeEvents.Add(type, new List<Action<Rune>>());
+            runeEvents.Add(type, new List<Action<Rune, Action>>());
 
         runeEvents[type].Add(action);
     }
+
+    public void CallbackNumberUp()
+    {
+        currentCallbacks++;
+    }
+
+    public void CallbackNumberDown()
+    {
+        currentCallbacks--;
+        if (currentCallbacks != 0) return;
+        if (runePump.Count > 0)
+        {
+            PumpRuneQue();   
+        }
+    }
+
 
 
     public void RecordAllRune(Rune rune)
@@ -49,6 +83,7 @@ public class RuneManager : MonoBehaviour
     public abstract class Rune
     {
         public string name;
+        public abstract void OnGUI();
     }
 
     
@@ -65,6 +100,11 @@ public class RuneManager : MonoBehaviour
             team = Team;
             this.guid = guid;
             this.type = type;
+        }
+
+        public override void OnGUI()
+        {
+            EditorGUILayout.LabelField("NewController, Team: " + team + " GUID: " + guid + " Type : " +  type + "\n");
         }
     }
 
@@ -83,6 +123,11 @@ public class RuneManager : MonoBehaviour
             characterName = CharacterName;
             this.guid = guid;
         }
+
+        public override void OnGUI()
+        {
+            EditorGUILayout.LabelField("SpawnEvent, CharacterName: " + characterName +" Team: " + team + " GUID: " + guid + "\n");
+        }
     }
 
     public class DamageEvent : Rune
@@ -99,20 +144,29 @@ public class RuneManager : MonoBehaviour
             amount = Amount;
         }
 
+        public override void OnGUI()
+        {
+            EditorGUILayout.LabelField("Damage Events, Origin" + origin.name + " target: " + target.name + " Amount: " + amount + "\n");
+        }
     }
 
     public class MoveEvent : Rune
     {
         public SlideCharacter mover;
-        public Vector2 startPosition;
-        public Vector2 endPosition;
+        public Tile startTile;
+        public Tile endTile;
 
-        public MoveEvent(SlideCharacter Mover, Vector2 StartPosition, Vector2 EndPosition)
+        public MoveEvent(SlideCharacter Mover, Tile StartTile, Tile EndTile)
         {
             name = "MoveEvent";
             mover = Mover;
-            startPosition = StartPosition;
-            endPosition = EndPosition;
+            startTile = StartTile;
+            endTile = EndTile;
+        }
+
+        public override void OnGUI()
+        {
+            EditorGUILayout.LabelField("MoveEvent, Mover" + mover.name + "Start Position:" + startTile.name + " End Position:" + endTile.name + "\n");
         }
     }
 
