@@ -170,5 +170,49 @@ public class RuneManager : MonoBehaviour
         }
     }
 
+    public class RotateTurnForController : Rune
+    {
+        public Controller currentController;
+
+        public RotateTurnForController(Controller controller)
+        {
+            currentController = controller;
+        }
+
+        public override void OnGUI()
+        {
+            EditorGUILayout.LabelField("RotateTurnForController, " + currentController.name + "\n");
+        }
+    }
+
+    public class RotateTurnForCharacter : Rune
+    {
+        public Controller currentController;
+        public SlideCharacter character;
+
+        
+
+        public override void OnGUI()
+        {
+            EditorGUILayout.LabelField("RotateTurnForCharacter, CurrentController "  + currentController.name + " Character Starting Turn " + character + "\n");   
+        }
+    }
+
+
+    public class WaitForTileInput : Rune
+    {
+        public Controller controller;
+
+        public WaitForTileInput(Controller controller)
+        {
+            this.controller = controller;
+        }
+
+        public override void OnGUI()
+        {
+            EditorGUILayout.LabelField("WaitForTileInput," + controller.name + "\n");
+        }
+    }
+
 
 }

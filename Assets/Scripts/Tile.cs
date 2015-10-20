@@ -41,4 +41,10 @@ public class Tile : MonoBehaviour {
         Parent = null;
         HasBeenCheckedBySearch = false;
     }
+
+    void OnMouseDown()
+    {
+        ConflictController.Instance.TileSelected(this);
+    }
+
 }

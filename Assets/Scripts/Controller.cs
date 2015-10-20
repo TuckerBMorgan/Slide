@@ -10,14 +10,23 @@ public class Controller : MonoBehaviour
         AI
     }
 
+    public enum  ControllerState
+    {
+        WaitingForTurn,
+        WaitingForTileSelection,
+        WaitingForCharacterSelection,
+        WaitingForActionToFinish
+    }
 
-    private int team;
-    private Guid guid;
-    private List<SlideCharacter> crewMembers;
+    protected int team;
+    protected Guid guid;
+    protected List<SlideCharacter> crewMembers;
+    protected ControllerState _state;
 
     void Awake()
     {
         crewMembers = new List<SlideCharacter>();
+        _state = ControllerState.WaitingForTurn;
     }
 	// Use this for initialization
 	void Start () {
@@ -40,6 +49,11 @@ public class Controller : MonoBehaviour
         this.guid = guid;
     }
 
+    public virtual void TileSelected(Tile tile)
+    {
+    }
+
+
     public virtual void StartTurn()
     {
         
@@ -49,4 +63,7 @@ public class Controller : MonoBehaviour
     {
         
     }
+
+
+    
 }

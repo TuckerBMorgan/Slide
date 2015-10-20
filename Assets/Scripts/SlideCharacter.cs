@@ -10,6 +10,8 @@ public class SlideCharacter : MonoBehaviour {
     private Guid guid;
     private int team;
 
+    public Tile currentTile;
+
 	// Use this for initialization
 	void Start () {
 	

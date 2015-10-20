@@ -14,6 +14,10 @@ public class CharacterMovementController : MonoBehaviour{
 	
 	// Update is called once per frame
 	void Update () {
+	    if (currentMovementState == null)
+	    {
+	        currentMovementState = new Idle(this);
+	    }
         currentMovementState.Update();
 	    MoveState = currentMovementState.ToString().Replace("CharacterMovementController", "");
 	}
@@ -104,7 +108,6 @@ public class CharacterMovementController : MonoBehaviour{
                             CharacterMovementController.currentMovementState = new Idle(CharacterMovementController);
                             if (act != null)
                             {
-                                print("Fired action");
                                 act();
                             }
                         }
