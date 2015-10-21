@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 public class PlayerController : Controller
 {
-    public SlideCharacter SelectedCharacterController;
 
 	// Use this for initialization
 	void Start () {
@@ -18,8 +17,12 @@ public class PlayerController : Controller
     public override void TileSelected(Tile tile)
     {
         if (_state != ControllerState.WaitingForTileSelection) return;
-        var moves = GridController.Singelton.GetRunedPath(SelectedCharacterController, SelectedCharacterController.currentTile, tile);
+        if (selectedCharacter == null) return;
 
+        Debug.Log(tile.name);
+        Debug.Log(selectedCharacter.currentTile);
+        var moves = GridController.Singelton.GetRunedPath(selectedCharacter, selectedCharacter.currentTile, tile);
+        Debug.Log(moves.Count);
         for (var index = 0; index < moves.Count; index++)
         {
             var t = moves[index];
@@ -27,13 +30,20 @@ public class PlayerController : Controller
         }
     }
 
+    public override void CharacterSelected(SlideCharacter character)
+    {
+        selectedCharacter = character;
+    }
+
     public override void StartTurn()
     {
-
+        _state = ControllerState.WaitingForTileSelection;
+        selectedCharacter = crewMembers[0];
+        ConflictController.Instance.AddPulseMaterial(selectedCharacter.GetComponent<Renderer>());
     }
 
     public override void EndTurn()
     {
-
+        _state = ControllerState.WaitingForTurn;
     }
 }

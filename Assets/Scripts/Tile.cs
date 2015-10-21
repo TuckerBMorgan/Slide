@@ -44,6 +44,7 @@ public class Tile : MonoBehaviour {
 
     void OnMouseDown()
     {
+        Debug.Log("Clicked On " + X + "," + Y);
         ConflictController.Instance.TileSelected(this);
     }
 

@@ -10,6 +10,8 @@ public class ConflictController : MonoBehaviour
     private List<Controller> ControllersInGame;
     public Dictionary<int, Controller> Players;
     public Dictionary<Guid, SlideCharacter> CharactersInGame;
+    public Material pulseTest;
+
     private int TurnOrder;
 
     public static ConflictController Instance;
@@ -24,12 +26,15 @@ public class ConflictController : MonoBehaviour
 	void Start () {
 	    
         ControllersInGame =  new List<Controller>();
-	    TurnOrder = 0;
+	    TurnOrder = -1;
+
+
 
         RuneManager.Singelton.AddListener(typeof(RuneManager.RotateTurnForController), RotateTurnForController);
         RuneManager.Singelton.AddListener(typeof(RuneManager.MoveEvent), MoveCharacter);
         RuneManager.Singelton.AddListener(typeof(RuneManager.SpawnEvent), SpawnCharacter);
         RuneManager.Singelton.AddListener(typeof(RuneManager.NewController), NewController);
+
 
         Players = new Dictionary<int, Controller>();
         CharactersInGame = new Dictionary<Guid, SlideCharacter>();
@@ -44,6 +49,7 @@ public class ConflictController : MonoBehaviour
 
         RuneManager.Singelton.ExecuteRune(spaw);
 
+        /*
         var moves = GridController.Singelton.GetRunedPath(CharactersInGame[spaw.guid],
             GridController.Singelton.GetTile(0, 0), GridController.Singelton.GetTile(3, 7));
 
@@ -52,11 +58,12 @@ public class ConflictController : MonoBehaviour
             var t = moves[index];
             RuneManager.Singelton.ExecuteRune(t);
         }
-
+        */
         var en = new RuneManager.SpawnEvent(1, new Vector2(9, 9), "TestAI", Guid.NewGuid());
         RuneManager.Singelton.ExecuteRune(en);
-
-
+        CurrentController = ControllersInGame[0];
+        var firstTurn = new RuneManager.RotateTurnForController(CurrentController);
+        RuneManager.Singelton.ExecuteRune(firstTurn);
     }
 	
 	// Update is called once per frame
@@ -68,7 +75,7 @@ public class ConflictController : MonoBehaviour
     {
         if (CurrentController != null)
         {
-            
+            CurrentController.TileSelected(tile);
         }
     }
 
@@ -88,7 +95,6 @@ public class ConflictController : MonoBehaviour
         {
             TurnOrder++;
         }
-
         CurrentController.EndTurn();
         CurrentController = ControllersInGame[TurnOrder];
         CurrentController.StartTurn();
@@ -145,6 +151,43 @@ public class ConflictController : MonoBehaviour
         go.GetComponent<SlideCharacter>().Setup(100, 100, 2, spawn.guid, spawn.team);
         Players[spawn.team].AddCrewMember(go.GetComponent<SlideCharacter>());
         CharactersInGame.Add(spawn.guid, go.GetComponent<SlideCharacter>());
+        go.GetComponent<SlideCharacter>().SetTile(GridController.Singelton.GetTile((int)spawn.spawnPosition.x, (int)spawn.spawnPosition.y));
         action();
     }
+
+    public void CharacterSelected(SlideCharacter character)
+    {
+        Debug.Log(CurrentController.SelectedCharacter);
+        if (CurrentController && CurrentController.SelectedCharacter != character)
+        {
+            AddPulseMaterial(character.GetComponent<Renderer>());
+            CurrentController.CharacterSelected(character);
+        }
+    }
+
+    public void AddPulseMaterial(Renderer rend)
+    {
+        Material[] mats = rend.sharedMaterials;
+        List<Material> newMats = new List<Material>();
+        for (int i = 0; i < mats.Length; i++)
+        {
+            newMats.Add(mats[i]);
+        }
+        newMats.Add(pulseTest);
+        rend.GetComponent<Renderer>().sharedMaterials = newMats.ToArray();
+
+    }
+
+    public void RemovePulseMaterial(Renderer rend)
+    {
+        Material[] mats = rend.sharedMaterials;
+        List<Material> newMats = new List<Material>();
+        for (int i = 0; i < mats.Length; i++)
+        {
+            newMats.Add(mats[i]);
+        }
+        newMats.Add(pulseTest);
+        rend.GetComponent<Renderer>().sharedMaterials = newMats.ToArray();
+    }
+
 }

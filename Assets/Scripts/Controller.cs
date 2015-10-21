@@ -21,7 +21,10 @@ public class Controller : MonoBehaviour
     protected int team;
     protected Guid guid;
     protected List<SlideCharacter> crewMembers;
-    protected ControllerState _state;
+    public ControllerState _state;
+
+    protected SlideCharacter selectedCharacter;
+    public SlideCharacter SelectedCharacter { get { return selectedCharacter; } }
 
     void Awake()
     {
@@ -51,6 +54,15 @@ public class Controller : MonoBehaviour
 
     public virtual void TileSelected(Tile tile)
     {
+        if (_state == ControllerState.WaitingForTileSelection)
+        {
+
+        }
+    }
+
+    public virtual void CharacterSelected(SlideCharacter character)
+    {
+
     }
 
 

@@ -30,4 +30,16 @@ public class SlideCharacter : MonoBehaviour {
         this.guid = guid;
         team = Team;
     }
+
+    public void SetTile(Tile tile)
+    {
+        currentTile = tile;
+    }
+
+    void OnMouseDown()
+    {
+        Debug.Log("Clicked");
+        ConflictController.Instance.CharacterSelected(this);
+    }
 }
+
