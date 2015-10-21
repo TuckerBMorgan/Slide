@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections.Generic;
 
 public class PlayerController : Controller
@@ -6,7 +7,7 @@ public class PlayerController : Controller
 
 	// Use this for initialization
 	void Start () {
-	    
+        RuneManager.Singelton.AddListener(typeof(RuneManager.WaitForTileInput), TileInput);	    
 	}
 	
 	// Update is called once per frame
@@ -18,16 +19,19 @@ public class PlayerController : Controller
     {
         if (_state != ControllerState.WaitingForTileSelection) return;
         if (selectedCharacter == null) return;
-
-        Debug.Log(tile.name);
-        Debug.Log(selectedCharacter.currentTile);
+        
         var moves = GridController.Singelton.GetRunedPath(selectedCharacter, selectedCharacter.currentTile, tile);
-        Debug.Log(moves.Count);
         for (var index = 0; index < moves.Count; index++)
         {
             var t = moves[index];
             RuneManager.Singelton.ExecuteRune(t);
         }
+        _state = ControllerState.WaitingForActionToFinish;
+        var getInput = new RuneManager.WaitForTileInput(this);
+        RuneManager.Singelton.ExecuteRune(getInput);
+
+
+
     }
 
     public override void CharacterSelected(SlideCharacter character)
@@ -45,5 +49,16 @@ public class PlayerController : Controller
     public override void EndTurn()
     {
         _state = ControllerState.WaitingForTurn;
+    }
+
+    public void TileInput(RuneManager.Rune rune, Action action)
+    {
+        var tInput = ((RuneManager.WaitForTileInput) rune);
+
+        if (tInput.controller == this)
+        {
+            _state = ControllerState.WaitingForTileSelection;
+        }
+        action();
     }
 }

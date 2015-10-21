@@ -208,7 +208,7 @@ public class GridController : MonoBehaviour
             neighbors.Add(_grid[center.X - 1][center.Y]);
 
         if ((center.X + 1) < sizeOfArray)
-            neighbors.Add(_grid[center.X][center.Y + 1]);
+            neighbors.Add(_grid[center.X + 1][center.Y]);
 
         if ((center.Y + 1) >= sizeOfArray) return neighbors;
         neighbors.Add(_grid[center.X][center.Y + 1]);

@@ -1,8 +1,6 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Runtime.Remoting.Messaging;
 using UnityEditor;
 
 
@@ -211,6 +209,23 @@ public class RuneManager : MonoBehaviour
         public override void OnGUI()
         {
             EditorGUILayout.LabelField("WaitForTileInput," + controller.name + "\n");
+        }
+    }
+
+    public class SetActionPoint : Rune
+    {
+        public int amount;
+        public SlideCharacter character;
+
+        public SetActionPoint(int amount, SlideCharacter character)
+        {
+            this.amount = amount;
+            this.character = character;
+        }
+
+        public override void OnGUI()
+        {
+            
         }
     }
 

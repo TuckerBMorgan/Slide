@@ -98,6 +98,7 @@ public class ConflictController : MonoBehaviour
         CurrentController.EndTurn();
         CurrentController = ControllersInGame[TurnOrder];
         CurrentController.StartTurn();
+        action();
     }
 
 
