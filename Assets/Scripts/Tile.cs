@@ -18,12 +18,15 @@ public class Tile : MonoBehaviour {
 
     public string Name { get; set; }
 
+    public bool Occupied;
+
     void Awake()
     {
-        H = H = 0;
-        G = G = 0;
-        F = F = 0;
+        H = 0;
+        G = 0;
+        F = 0;
         HasBeenCheckedBySearch = false;
+        Occupied = false;
     }
 
     public void SetUpTile(int x, int y)

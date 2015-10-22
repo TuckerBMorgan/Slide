@@ -38,14 +38,19 @@ public class RuneManager : MonoBehaviour
     void PumpRuneQue()
     {
         var rune = runePump.Dequeue();
-
-        for (var i = 0; i < runeEvents[rune.GetType()].Count; i++)
+        CallbackNumberUp();
+        rune.Execute(CallbackNumberDown);
+        if (runeEvents.ContainsKey(rune.GetType()))
         {
-            CallbackNumberUp();
-            runeEvents[rune.GetType()][i].Invoke(rune, CallbackNumberDown);
+            for (var i = 0; i < runeEvents[rune.GetType()].Count; i++)
+            {
+                CallbackNumberUp();
+                runeEvents[rune.GetType()][i].Invoke(rune, CallbackNumberDown);
+            }
         }
         RecordAllRune(rune);
     }
+
 
 
     public void AddListener(Type type, Action<Rune, Action> action)
@@ -71,8 +76,6 @@ public class RuneManager : MonoBehaviour
         }
     }
 
-
-
     public void RecordAllRune(Rune rune)
     {
         gameRunes.Add(rune);
@@ -82,6 +85,7 @@ public class RuneManager : MonoBehaviour
     {
         public string name;
         public abstract void OnGUI();
+        public abstract void Execute(System.Action action);
     }
 
     
@@ -98,6 +102,28 @@ public class RuneManager : MonoBehaviour
             team = Team;
             this.guid = guid;
             this.type = type;
+        }
+
+        public override void Execute(System.Action action)
+        {
+            switch(type)
+            {
+                case Controller.ControllerType.Player:
+                    var go = Resources.Load("Prefabs/PlayerController") as GameObject;
+                    go = Instantiate(go);
+                    ConflictController.Instance.Players.Add(team, go.GetComponent<PlayerController>());
+                    go.GetComponent<PlayerController>().Setup(team, guid);
+                    ConflictController.Instance.AddNewControllerToGame(go.GetComponent<PlayerController>());
+                    break;
+                case Controller.ControllerType.AI:
+                    var aiGo = Resources.Load("Prefabs/AIController") as GameObject;
+                    aiGo = Instantiate(aiGo);
+                    ConflictController.Instance.Players.Add(team, aiGo.GetComponent<AiController>());
+                    aiGo.GetComponent<AiController>().Setup(team, guid);
+                    ConflictController.Instance.AddNewControllerToGame(aiGo.GetComponent<AiController>());
+                    break;
+            }
+            action();
         }
 
         public override void OnGUI()
@@ -122,6 +148,23 @@ public class RuneManager : MonoBehaviour
             this.guid = guid;
         }
 
+        public override void Execute(System.Action action)
+        {
+            var go = Resources.Load("Prefabs/Sphere") as GameObject;
+            Vector3 spawnPos = new Vector3();
+            spawnPos.x = spawnPosition.x;
+            spawnPos.y = 0;
+            spawnPos.z = spawnPosition.y;
+            go = Instantiate(go);
+            go.transform.position = spawnPos;
+            go.GetComponent<SlideCharacter>().Setup(100, 100, 2, guid, team);
+            ConflictController.Instance.Players[team].AddCrewMember(go.GetComponent<SlideCharacter>());
+            ConflictController.Instance.CharactersInGame.Add(guid, go.GetComponent<SlideCharacter>());
+            go.GetComponent<SlideCharacter>().SetTile(GridController.Singelton.GetTile((int)spawnPosition.x, (int)spawnPosition.y));
+            GridController.Singelton.GetTile((int)spawnPosition.x, (int)spawnPosition.y).Occupied = true;
+            action();
+        }
+
         public override void OnGUI()
         {
             EditorGUILayout.LabelField("SpawnEvent, CharacterName: " + characterName +" Team: " + team + " GUID: " + guid + "\n");
@@ -140,6 +183,11 @@ public class RuneManager : MonoBehaviour
             origin = Origin;
             target = Target;
             amount = Amount;
+        }
+
+        public override void Execute(System.Action action)
+        {
+            action();
         }
 
         public override void OnGUI()
@@ -162,6 +210,13 @@ public class RuneManager : MonoBehaviour
             endTile = EndTile;
         }
 
+        public override void Execute(System.Action action)
+        {
+            mover.GetComponent<CharacterMovementController>().SetMoveTargetAndGo(endTile, action);
+            startTile.Occupied = false;
+            endTile.Occupied = true;
+        }
+
         public override void OnGUI()
         {
             EditorGUILayout.LabelField("MoveEvent, Mover" + mover.name + "Start Position:" + startTile.name + " End Position:" + endTile.name + "\n");
@@ -177,38 +232,47 @@ public class RuneManager : MonoBehaviour
             currentController = controller;
         }
 
+        public override void Execute(System.Action action)
+        {
+
+            if(ConflictController.Instance.TurnOrder == ConflictController.Instance.ControllersInGame.Count)
+            {
+                ConflictController.Instance.TurnOrder = 0;
+            }
+            else
+            {
+                ConflictController.Instance.TurnOrder++;
+            }
+
+            ConflictController.Instance.CurrentController.EndTurn();
+            ConflictController.Instance.CurrentController = ConflictController.Instance.ControllersInGame[ConflictController.Instance.TurnOrder];
+            ConflictController.Instance.CurrentController.StartTurn();
+            action();
+        }
+
         public override void OnGUI()
         {
             EditorGUILayout.LabelField("RotateTurnForController, " + currentController.name + "\n");
         }
     }
 
-    public class RotateTurnForCharacter : Rune
-    {
-        public Controller currentController;
-        public SlideCharacter character;
-
-        
-
-        public override void OnGUI()
-        {
-            EditorGUILayout.LabelField("RotateTurnForCharacter, CurrentController "  + currentController.name + " Character Starting Turn " + character + "\n");   
-        }
-    }
-
-
-    public class WaitForTileInput : Rune
+    public class WaitForSelection : Rune
     {
         public Controller controller;
 
-        public WaitForTileInput(Controller controller)
+        public WaitForSelection(Controller controller)
         {
             this.controller = controller;
         }
 
+        public override void Execute(System.Action action)
+        {
+            action();
+        }
+
         public override void OnGUI()
         {
-            EditorGUILayout.LabelField("WaitForTileInput," + controller.name + "\n");
+            EditorGUILayout.LabelField("WaitForSelection," + controller.name + "\n");
         }
     }
 
@@ -223,9 +287,47 @@ public class RuneManager : MonoBehaviour
             this.character = character;
         }
 
+        public override void Execute(System.Action action)
+        {
+            character.SetActionPoints(amount);
+            action();
+            var checkAp = new CheckActionPoints(character.Team);
+            RuneManager.Singelton.ExecuteRune(checkAp);
+        }
+
         public override void OnGUI()
         {
-            
+            EditorGUILayout.LabelField("SetActionPoints," + character.name + "'s AP changed by " + amount + "\n");
+        }
+    }
+    public class CheckActionPoints : Rune
+    {
+        public int team;
+
+        public CheckActionPoints(int team)
+        {
+            this.team = team;
+        }
+
+        public override void Execute(System.Action action)
+        {
+            var controller = ConflictController.Instance.ControllersInGame[team];
+            int totolAp = 0;
+            for (int i = 0; i < controller.Crew.Count;i++ )
+            {
+                totolAp += controller.Crew[i].GetActionPoints();
+            }
+            if(totolAp == 0)
+            {
+                var rotateController = new RotateTurnForController(ConflictController.Instance.CurrentController);
+                RuneManager.Singelton.ExecuteRune(rotateController);
+            }
+                action();
+        }
+
+        public override void OnGUI()
+        {
+            EditorGUILayout.LabelField("CheckActionPoints," + "Tea:" + team + "\n");
         }
     }
 

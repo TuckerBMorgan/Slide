@@ -15,7 +15,8 @@ public class CurrentController : MonoBehaviour {
 	void Update () {
         if (ConflictController.Instance.CurrentController != null)
         {
-            text.text = "Current Player " + ConflictController.Instance.CurrentController.name + " in " + ConflictController.Instance.CurrentController._state;
+            text.text = "Current Player " + ConflictController.Instance.CurrentController.name + " in " + ConflictController.Instance.CurrentController._state + "\n"
+                + "AP: " + ConflictController.Instance.CurrentController.SelectedCharacter.GetActionPoints();
         }
         else
         {

@@ -9,8 +9,10 @@ public class SlideCharacter : MonoBehaviour {
     private int actions;
     private Guid guid;
     private int team;
+    public int Team { get { return team; } }
     private int actionPoints;
     private int totalActionPoints;
+    public GameObject healthBar;
 
     public Tile currentTile;
 
@@ -41,7 +43,25 @@ public class SlideCharacter : MonoBehaviour {
 
     void OnMouseDown()
     {
-        ConflictController.Instance.CharacterSelected(this);
+        if (Input.GetMouseButton(0))
+        {
+            ConflictController.Instance.CharacterSelected(this);
+        }
+    }
+    bool rightClick = false;
+    void OnMouseOver()
+    {
+        if(Input.GetMouseButton(1) == false)
+        {
+            rightClick = false;
+        }
+        if (rightClick) return;
+
+        if (Input.GetMouseButton(1))
+        {
+            rightClick = true;
+        }
+        
     }
 
     public int GetActionPoints()
@@ -54,5 +74,14 @@ public class SlideCharacter : MonoBehaviour {
         actionPoints--;
     }
 
+    public void SetActionPoints(int value)
+    {
+        actionPoints = value;
+    }
+
+    public bool CanAttack(SlideCharacter target)
+    {
+        return true;
+    }
 }
 

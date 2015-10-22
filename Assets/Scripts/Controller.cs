@@ -15,12 +15,14 @@ public class Controller : MonoBehaviour
         WaitingForTurn,
         WaitingForTileSelection,
         WaitingForCharacterSelection,
-        WaitingForActionToFinish
+        WaitingForActionToFinish,
+        WaitingForSelection,
     }
 
     protected int team;
     protected Guid guid;
     protected List<SlideCharacter> crewMembers;
+    public List<SlideCharacter> Crew { get { return crewMembers; } }
     public ControllerState _state;
 
     protected SlideCharacter selectedCharacter;
@@ -52,12 +54,14 @@ public class Controller : MonoBehaviour
         this.guid = guid;
     }
 
+    public virtual void RotateTurnForCharacter()
+    {
+
+    }
+
     public virtual void TileSelected(Tile tile)
     {
-        if (_state == ControllerState.WaitingForTileSelection)
-        {
 
-        }
     }
 
     public virtual void CharacterSelected(SlideCharacter character)

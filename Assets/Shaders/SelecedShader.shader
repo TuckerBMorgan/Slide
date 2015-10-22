@@ -14,7 +14,7 @@
 
 			fixed4 frag() : SV_TARGET
 			{
-				return fixed4(sin(_Time.x * 100.0) / 10 ,sin(_Time.x * 100.0) / 10.0, sin(_Time.x * 100.0) / 10.0, 0.2);
+				return fixed4(sin(_Time.x * 100.0) / 10 ,sin(_Time.x * 100.0) / 5.0, sin(_Time.x * 100.0) / 20.0, 0.2);
 			}
 			ENDCG
 		}

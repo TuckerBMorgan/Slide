@@ -149,6 +149,10 @@ public class GridController : MonoBehaviour
 
                     return FinalPath(t);
                 }
+                if(t.Occupied)
+                {
+                    continue;
+                }
 
                 if (closedList.Contains(t))
                 {
