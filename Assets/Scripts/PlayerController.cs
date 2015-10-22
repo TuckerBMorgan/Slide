@@ -45,10 +45,6 @@ public class PlayerController : Controller
     {
         if (character.Team != team)
         {
-            if (selectedCharacter.CanAttack(character))
-            {
-
-            }
         }
         selectedCharacter = character;
     }

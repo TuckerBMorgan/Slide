@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 
 
@@ -151,10 +152,12 @@ public class RuneManager : MonoBehaviour
         public override void Execute(System.Action action)
         {
             var go = Resources.Load("Prefabs/Sphere") as GameObject;
-            Vector3 spawnPos = new Vector3();
-            spawnPos.x = spawnPosition.x;
-            spawnPos.y = 0;
-            spawnPos.z = spawnPosition.y;
+            var spawnPos = new Vector3
+            {
+                x = spawnPosition.x,
+                y = 0,
+                z = spawnPosition.y
+            };
             go = Instantiate(go);
             go.transform.position = spawnPos;
             go.GetComponent<SlideCharacter>().Setup(100, 100, 2, guid, team);
@@ -187,6 +190,12 @@ public class RuneManager : MonoBehaviour
 
         public override void Execute(System.Action action)
         {
+            var armour = target.Armour;
+
+            var damageAmount = amount*(armour/(armour + 100));
+
+            target.Health -= damageAmount;
+
             action();
         }
 
@@ -312,11 +321,7 @@ public class RuneManager : MonoBehaviour
         public override void Execute(System.Action action)
         {
             var controller = ConflictController.Instance.ControllersInGame[team];
-            int totolAp = 0;
-            for (int i = 0; i < controller.Crew.Count;i++ )
-            {
-                totolAp += controller.Crew[i].GetActionPoints();
-            }
+            var totolAp = controller.Crew.Sum(t => t.GetActionPoints());
             if(totolAp == 0)
             {
                 var rotateController = new RotateTurnForController(ConflictController.Instance.CurrentController);

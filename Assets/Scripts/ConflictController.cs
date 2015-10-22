@@ -62,7 +62,7 @@ public class ConflictController : MonoBehaviour
         var firstTurn = new RuneManager.RotateTurnForController(CurrentController);
         RuneManager.Singelton.ExecuteRune(firstTurn);
 
-        UIController.Singelton.Setup();
+        //UIController.Singelton.Setup();
 
     }
 	
@@ -87,11 +87,9 @@ public class ConflictController : MonoBehaviour
 
     public void CharacterSelected(SlideCharacter character)
     {
-        if (CurrentController && CurrentController.SelectedCharacter != character)
-        {
-            AddPulseMaterial(character.GetComponent<Renderer>());
-            CurrentController.CharacterSelected(character);
-        }
+        if (!CurrentController || CurrentController.SelectedCharacter == character) return;
+        AddPulseMaterial(character.GetComponent<Renderer>());
+        CurrentController.CharacterSelected(character);
     }
 
     public void AddPulseMaterial(Renderer rend)
@@ -100,9 +98,9 @@ public class ConflictController : MonoBehaviour
         {
             RemovePulseMaterial(selectedCharacter.GetComponent<Renderer>());
         }
-        Material[] mats = rend.sharedMaterials;
-        List<Material> newMats = new List<Material>();
-        for (int i = 0; i < mats.Length; i++)
+        var mats = rend.sharedMaterials;
+        var newMats = new List<Material>();
+        for (var i = 0; i < mats.Length; i++)
         {
             newMats.Add(mats[i]);
         }
@@ -113,9 +111,9 @@ public class ConflictController : MonoBehaviour
 
     public void RemovePulseMaterial(Renderer rend)
     {
-        Material[] mats = rend.sharedMaterials;
-        List<Material> newMats = new List<Material>();
-        for (int i = 0; i < mats.Length;i++ )
+        var mats = rend.sharedMaterials;
+        var newMats = new List<Material>();
+        for (var i = 0; i < mats.Length;i++ )
         {
             newMats.Add(mats[i]);
         }

@@ -75,16 +75,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\AiController.cs" />
+    <Compile Include="Assets\Scripts\BasicAttack.cs" />
+    <Compile Include="Assets\Scripts\CharacterAction.cs" />
     <Compile Include="Assets\Scripts\CharacterMovementController.cs" />
     <Compile Include="Assets\Scripts\ConflictController.cs" />
     <Compile Include="Assets\Scripts\Controller.cs" />
     <Compile Include="Assets\Scripts\CurrentController.cs" />
     <Compile Include="Assets\Scripts\GameEngine.cs" />
     <Compile Include="Assets\Scripts\GridController.cs" />
+    <Compile Include="Assets\Scripts\HealthBarController.cs" />
     <Compile Include="Assets\Scripts\PlayerController.cs" />
     <Compile Include="Assets\Scripts\RuneManager.cs" />
     <Compile Include="Assets\Scripts\SlideCharacter.cs" />
+    <Compile Include="Assets\Scripts\SpellAction.cs" />
     <Compile Include="Assets\Scripts\Tile.cs" />
+    <Compile Include="Assets\Scripts\UIController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Shaders\SelecedShader.shader" />

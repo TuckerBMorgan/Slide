@@ -1,18 +1,21 @@
 ﻿using System;
 using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class SlideCharacter : MonoBehaviour {
     
-    private float health;
-    private float armour;
+    public float Health { get; set; }
+    public float Armour { get; set; }
     private int actions;
+    public  int Damage { get; set; }
     private Guid guid;
     private int team;
     public int Team { get { return team; } }
     private int actionPoints;
     private int totalActionPoints;
     public GameObject healthBar;
+    private Dictionary<string, CharacterAction> allowedActions;
+    public CharacterAction currentAction;
 
     public Tile currentTile;
 
@@ -20,6 +23,7 @@ public class SlideCharacter : MonoBehaviour {
 	void Start ()
 	{
 	    totalActionPoints = actionPoints = 3;
+	    allowedActions = new Dictionary<string, CharacterAction>();
 	}
 	
 	// Update is called once per frame
@@ -27,13 +31,26 @@ public class SlideCharacter : MonoBehaviour {
 	
 	}
 
+    public void OnStartTurn()
+    {
+        actionPoints = totalActionPoints;
+    }
+
+    public void AddAction(CharacterAction newAction)
+    { 
+        allowedActions.Add(newAction.name, newAction);    
+    }
+
+
     public void Setup(float Health, float Armour, int Actions, Guid guid, int Team)
     {
-        health = Health;
-        armour = Armour;
+        this.Health = Health;
+        this.Armour = Armour;
         actions = Actions;
         this.guid = guid;
         team = Team;
+
+        Damage = 10;
     }
 
     public void SetTile(Tile tile)
@@ -77,11 +94,6 @@ public class SlideCharacter : MonoBehaviour {
     public void SetActionPoints(int value)
     {
         actionPoints = value;
-    }
-
-    public bool CanAttack(SlideCharacter target)
-    {
-        return true;
     }
 }
 

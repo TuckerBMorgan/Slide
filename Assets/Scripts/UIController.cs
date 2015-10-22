@@ -29,7 +29,7 @@ public class UIController : MonoBehaviour {
 
     public void OnCharacterSpawn(RuneManager.Rune rune, System.Action action)
     {
-        GameObject go = Instantiate(healthBar);
+        var go = Instantiate(healthBar);
         var spwn = rune as RuneManager.SpawnEvent;
 
         var character = ConflictController.Instance.CharactersInGame[spwn.guid];
