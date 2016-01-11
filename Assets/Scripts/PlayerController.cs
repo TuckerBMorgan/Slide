@@ -15,7 +15,34 @@ public class PlayerController : Controller
 	
 	}
 
-    public override void TileSelected(Tile tile)
+    public override void OnSelctionAction(Entity entity)
+    {
+        if (entity.GetEntityType() != "SlideCharacter") return;
+        var slide = entity as SlideCharacter;
+        if (slide.Team != team) return;
+        if (entity == selectedCharacter) return;
+
+        AbilityButtonControl.Instance.ChangeSelectedCharacter(slide);
+        ConflictController.Instance.RemovePulseMaterial(selectedCharacter.GetComponent<Renderer>());
+        selectedCharacter = entity as SlideCharacter;
+        ConflictController.Instance.AddPulseMaterial(selectedCharacter.GetComponent<Renderer>());
+    }
+
+    public override void OnSecondaryAction(Entity entity)
+    {
+        if (_state != ControllerState.WaitingForSelection) return;
+        if (selectedCharacter == null) return;
+        if (selectedCharacter.Team != team) return;
+        
+        if (selectedCharacter.OnEntitySelection(entity))
+        {
+            _state = ControllerState.WaitingForActionToFinish;
+            var getInput = new RuneManager.WaitForSelection(this);
+            RuneManager.Singelton.ExecuteRune(getInput);
+        }
+    }
+
+    public void TileSelected(Tile tile)
     {
         if (_state != ControllerState.WaitingForSelection) return;
         if (selectedCharacter == null) return;
@@ -28,25 +55,12 @@ public class PlayerController : Controller
             RuneManager.Singelton.ExecuteRune(t);
         }
         _state = ControllerState.WaitingForActionToFinish;
-        
+
         var runeSetAp = new RuneManager.SetActionPoint(selectedCharacter.GetActionPoints() - 1, selectedCharacter);
         RuneManager.Singelton.ExecuteRune(runeSetAp);
 
         var getInput = new RuneManager.WaitForSelection(this);
         RuneManager.Singelton.ExecuteRune(getInput);
-    }
-
-    public override void RotateTurnForCharacter()
-    {
-
-    }
-
-    public override void CharacterSelected(SlideCharacter character)
-    {
-        if (character.Team != team)
-        {
-        }
-        selectedCharacter = character;
     }
 
     public override void StartTurn()
@@ -59,6 +73,8 @@ public class PlayerController : Controller
     public override void EndTurn()
     {
         _state = ControllerState.WaitingForTurn;
+        if (selectedCharacter == null) return;
+        ConflictController.Instance.RemovePulseMaterial(selectedCharacter.GetComponent<Renderer>());
     }
 
     public void SelectionInput(RuneManager.Rune rune, Action action)

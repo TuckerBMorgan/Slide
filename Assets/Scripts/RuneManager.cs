@@ -165,6 +165,14 @@ public class RuneManager : MonoBehaviour
             ConflictController.Instance.CharactersInGame.Add(guid, go.GetComponent<SlideCharacter>());
             go.GetComponent<SlideCharacter>().SetTile(GridController.Singelton.GetTile((int)spawnPosition.x, (int)spawnPosition.y));
             GridController.Singelton.GetTile((int)spawnPosition.x, (int)spawnPosition.y).Occupied = true;
+            go.name = characterName;
+            var healthBar = Resources.Load("Prefabs/Health") as GameObject;
+
+            healthBar = Instantiate(healthBar);
+
+            healthBar.transform.SetParent( UIController.Singelton.transform);
+            healthBar.GetComponent<HealthBarController>().character = go.GetComponent<SlideCharacter>();
+
             action();
         }
 
@@ -176,16 +184,25 @@ public class RuneManager : MonoBehaviour
 
     public class DamageEvent : Rune
     {
+        
+        public enum DamageType
+        {
+            physical,
+            magic,
+            pure
+        }
         public SlideCharacter origin;
         public SlideCharacter target;
         public float amount;
+        public DamageType damageType;
 
-        public DamageEvent(SlideCharacter Origin, SlideCharacter Target, float Amount)
+        public DamageEvent(SlideCharacter Origin, SlideCharacter Target, float Amount, DamageType damageType)
         {
             name = "DamageEvent";
             origin = Origin;
             target = Target;
             amount = Amount;
+            this.damageType = damageType;
         }
 
         public override void Execute(System.Action action)
@@ -332,7 +349,7 @@ public class RuneManager : MonoBehaviour
 
         public override void OnGUI()
         {
-            EditorGUILayout.LabelField("CheckActionPoints," + "Tea:" + team + "\n");
+            EditorGUILayout.LabelField("CheckActionPoints," + "Team:" + team + "\n");
         }
     }
 

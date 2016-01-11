@@ -27,6 +27,8 @@ public class Controller : MonoBehaviour
 
     protected SlideCharacter selectedCharacter;
     public SlideCharacter SelectedCharacter { get { return selectedCharacter; } }
+    
+
 
     void Awake()
     {
@@ -59,14 +61,14 @@ public class Controller : MonoBehaviour
 
     }
 
-    public virtual void TileSelected(Tile tile)
+    public virtual void OnSelctionAction(Entity entity)
     {
-
+        
     }
 
-    public virtual void CharacterSelected(SlideCharacter character)
+    public virtual void OnSecondaryAction(Entity entity)
     {
-
+       
     }
 
 

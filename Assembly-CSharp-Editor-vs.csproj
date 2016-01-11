@@ -47,6 +47,11 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Editor\RunePrinter.cs" />
+     <Compile Include="Assets\Editor\SpellEditor.cs" />
+     <Compile Include="Assets\JSON\Editor\JSONChecker.cs" />
+     <None Include="Assets\JSON\readme.txt" />
+     <None Include="Assets\Resources\Spells\notes.txt" />
+     <None Include="Assets\Resources\Spells\BasicAttack.txt" />
      <None Include="Assets\Shaders\SelecedShader.shader" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>

@@ -18,6 +18,6 @@ public class AiController : Controller {
     {
         _state = ControllerState.WaitingForTileSelection;
         selectedCharacter = crewMembers[0];
-        ConflictController.Instance.AddPulseMaterial(selectedCharacter.GetComponent<Renderer>());
+      //  ConflictController.Instance.AddPulseMaterial(selectedCharacter.GetComponent<Renderer>());
     }
 }

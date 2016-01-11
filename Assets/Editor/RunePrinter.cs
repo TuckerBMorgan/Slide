@@ -17,5 +17,6 @@ public class RunePrinter : EditorWindow {
         {
             t.OnGUI();
         }
+        Repaint();
     }
 }

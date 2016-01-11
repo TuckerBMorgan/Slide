@@ -46,20 +46,33 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\JSON\JSONObject.cs" />
+     <Compile Include="Assets\JSON\JSONTemplates.cs" />
+     <Compile Include="Assets\JSON\VectorTemplates.cs" />
      <Compile Include="Assets\Scripts\AiController.cs" />
      <Compile Include="Assets\Scripts\CharacterAction.cs" />
      <Compile Include="Assets\Scripts\CharacterMovementController.cs" />
+     <Compile Include="Assets\Scripts\CharacterState.cs" />
      <Compile Include="Assets\Scripts\ConflictController.cs" />
      <Compile Include="Assets\Scripts\Controller.cs" />
      <Compile Include="Assets\Scripts\CurrentController.cs" />
+     <Compile Include="Assets\Scripts\EntityPrototype.cs" />
      <Compile Include="Assets\Scripts\GameEngine.cs" />
      <Compile Include="Assets\Scripts\GridController.cs" />
      <Compile Include="Assets\Scripts\HealthBarController.cs" />
+     <Compile Include="Assets\Scripts\MoveAction.cs" />
      <Compile Include="Assets\Scripts\PlayerController.cs" />
      <Compile Include="Assets\Scripts\RuneManager.cs" />
      <Compile Include="Assets\Scripts\SlideCharacter.cs" />
+     <Compile Include="Assets\Scripts\Spell.cs" />
+     <Compile Include="Assets\Scripts\SpellAction.cs" />
+     <Compile Include="Assets\Scripts\Spells\PrototypeInterface.cs" />
+     <Compile Include="Assets\Scripts\StatusEffect.cs" />
      <Compile Include="Assets\Scripts\Tile.cs" />
      <Compile Include="Assets\Scripts\UIController.cs" />
+     <None Include="Assets\JSON\readme.txt" />
+     <None Include="Assets\Resources\Spells\notes.txt" />
+     <None Include="Assets\Resources\Spells\BasicAttack.txt" />
      <None Include="Assets\Shaders\SelecedShader.shader" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>

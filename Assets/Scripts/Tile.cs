@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Tile : MonoBehaviour {
+public class Tile : MonoBehaviour, Entity {
     public float H { get; set; }
 
     public float G { get; set; }
@@ -47,7 +47,40 @@ public class Tile : MonoBehaviour {
 
     void OnMouseDown()
     {
-        ConflictController.Instance.TileSelected(this);
+        if (Input.GetMouseButton(0))
+        {
+            ConflictController.Instance.OnSelectionAction(this);
+        }
+    }
+    bool rightClick = false;
+    void OnMouseOver()
+    {
+        if (Input.GetMouseButton(1) == false)
+        {
+            rightClick = false;
+        }
+        if (rightClick) return;
+
+        if (Input.GetMouseButton(1))
+        {
+            ConflictController.Instance.OnSecondaryAction(this);
+            rightClick = true;
+        }
+
     }
 
+    public string GetEntityType()
+    {
+        return "Tile";
+    }
+
+    public Tile getCurrentTile()
+    {
+        return this;
+    }
+
+    public MonoBehaviour GetUnityObject()
+    {
+        return this;
+    }
 }
