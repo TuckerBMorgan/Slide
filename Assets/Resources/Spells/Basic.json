@@ -1,5 +1,6 @@
 {
 	"Setup":{
+		"Name":"basic",
 		"TargetType":1,
 		"TargetFilter":1,
 		"TargetRange":0,

@@ -35,7 +35,6 @@ public enum TargetFilter
     Any
 }
 
-
 public class SpellAction : CharacterAction {
 
     public TargetType targetType;
@@ -105,6 +104,7 @@ public class SpellAction : CharacterAction {
         obj += "{\n";
 
         obj += "\t\"Setup\":{\n";
+        obj += "\t\t\"Name\":" + name + ",\n";
         obj += "\t\t\"TargetType\":" + (int)targetType + ",\n";
         obj += "\t\t\"TargetFilter\":" + (int)targetFilter + ",\n";
         obj += "\t\t\"TargetRange\":" + (int)targetRange + ",\n";
@@ -237,9 +237,10 @@ public class SpellAction : CharacterAction {
 
         JSONObject js = new JSONObject(text.text);
         SpellAction newSpell = new SpellAction();
-        newSpell.name = fileName;
-        JSONObject setup = js["Setup"];
         
+        JSONObject setup = js["Setup"];
+
+        newSpell.name = setup["Name"].str;
         int targetType = (int)setup["TargetType"].i;
         int targetFilter = (int)setup["TargetFilter"].i;
         int targetRange = (int)setup["TargetRange"].i;
@@ -273,6 +274,7 @@ public class SpellAction : CharacterAction {
                    break;
 
                case SpawnEventPrototype.EventTag:
+                   newSpell.protoEvents.Add(SpawnEventPrototype.Builder(key));
                    break;
 
                case BuffCastEventPrototype.EventTag:

@@ -182,6 +182,33 @@ public class RuneManager : MonoBehaviour
         }
     }
 
+    public class SpawnCastEvent : Rune
+    {
+        public string spawnAsset;
+        public int lifeLength;
+        public SpawnEventPrototype.spawnableAIType controllerType;
+        public Tile target;
+
+        public SpawnCastEvent(SlideCharacter origin, Tile target, string spawnAsset, int lifeLength, SpawnEventPrototype.spawnableAIType controllerType)
+        {
+            this.spawnAsset = spawnAsset;
+            this.lifeLength = lifeLength;
+            this.target = target;
+            this.controllerType = controllerType;
+        }
+
+        public override void Execute(Action action)
+        {
+            
+        }
+
+        public override void OnGUI()
+        {
+            
+        }
+
+    }
+
     public class DamageEvent : Rune
     {
         
@@ -350,6 +377,28 @@ public class RuneManager : MonoBehaviour
         public override void OnGUI()
         {
             EditorGUILayout.LabelField("CheckActionPoints," + "Team:" + team + "\n");
+        }
+    }
+
+    public class PresentMoveTiles : Rune
+    {
+        public SlideCharacter character;
+
+        public PresentMoveTiles(SlideCharacter character)
+        {
+            this.character = character;
+        }
+
+        public override void Execute(Action action)
+        {
+            GridController.DisplayMoveRange(character);
+
+            action();
+        }
+
+        public override void OnGUI()    
+        {
+            EditorGUILayout.LabelField("PresentMoveTiles, Character" + character.name + "\n");
         }
     }
 

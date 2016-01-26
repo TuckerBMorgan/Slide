@@ -49,6 +49,7 @@
      <Compile Include="Assets\JSON\JSONTemplates.cs" />
      <Compile Include="Assets\JSON\VectorTemplates.cs" />
      <Compile Include="Assets\Scripts\AbilityButtonControl.cs" />
+     <Compile Include="Assets\Scripts\AbilityButtonSingle.cs" />
      <Compile Include="Assets\Scripts\AiController.cs" />
      <Compile Include="Assets\Scripts\CharacterAction.cs" />
      <Compile Include="Assets\Scripts\CharacterMovementController.cs" />

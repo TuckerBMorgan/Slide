@@ -1,0 +1,20 @@
+﻿{
+	"Setup":{
+		"Name":"SpawnTotem",
+		"Health":"10"
+		"Targetable":0,
+		"Team":0
+	},
+	"Triggers":[{
+		"OnInRange":{
+			"Range":1,
+			"Aura":0
+			"Events":"[{
+				"DamageEvent":{
+					"Amount":10,
+					"DamageType":0
+				}
+			}]"
+		}
+	}]
+}

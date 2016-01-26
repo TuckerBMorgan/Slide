@@ -20,6 +20,8 @@ public class Tile : MonoBehaviour, Entity {
 
     public bool Occupied;
 
+    public Color keepColor;
+
     void Awake()
     {
         H = 0;
@@ -82,5 +84,15 @@ public class Tile : MonoBehaviour, Entity {
     public MonoBehaviour GetUnityObject()
     {
         return this;
+    }
+
+    public void SetToWhite()
+    {
+        GetComponent<Renderer>().material.color = Color.white;
+    }
+
+    public void SetToColor()
+    {
+        GetComponent<Renderer>().material.color = keepColor;
     }
 }

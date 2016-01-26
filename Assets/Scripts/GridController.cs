@@ -29,7 +29,8 @@ public class GridController : MonoBehaviour
                 go.transform.position = pos;
                 _grid[x][y] = go.GetComponent<Tile>();
                 _grid[x][y].SetUpTile(x, y);
-                go.GetComponent<Renderer>().material.color = new Color(Random.value, Random.value, Random.value);
+                go.GetComponent<Tile>().keepColor = new Color(Random.value, Random.value, Random.value);
+                go.GetComponent<Tile>().SetToColor();
             }
         }
         Singelton = this;
@@ -38,6 +39,39 @@ public class GridController : MonoBehaviour
     public Tile GetTile(int x, int y)
     {
         return _grid[x][y];
+    }
+
+    public Tile[][] GetGrid()
+    {
+        return _grid;
+    }
+    
+    public static void DisplayMoveRange(SlideCharacter slide)
+    {
+        Tile[][] grid = GridController.Singelton.GetGrid();
+        for (int x = 0; x < grid.Length; x++)
+        {
+            for (int y = 0; y < grid[0].Length; y++)
+            {
+                grid[x][y].SetToColor();
+                if (slide.allowedActions["Move"].ValidateSelection(grid[x][y]))
+                {
+                    grid[x][y].SetToWhite();
+                }
+            }
+        }
+    }
+
+    public static void ResetGridColor()
+    {
+        Tile[][] grid = GridController.Singelton.GetGrid();
+        for (int x = 0; x < grid.Length; x++)
+        {
+            for (int y = 0; y < grid[0].Length; y++)
+            {
+                grid[x][y].SetToColor();
+            }
+        }
     }
 
     public List<RuneManager.MoveEvent> GetRunedPath(SlideCharacter slideCharacter, Tile start, Tile end)

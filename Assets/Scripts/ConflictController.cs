@@ -57,6 +57,7 @@ public class ConflictController : MonoBehaviour
         RuneManager.Singelton.ExecuteRune(firstTurn);
 
         AbilityButtonControl.Instance.ChangeSelectedCharacter(CurrentController.Crew[0]);
+
     }
 	
 	// Update is called once per frame

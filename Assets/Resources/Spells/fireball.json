@@ -1,5 +1,6 @@
 {
 	"Setup":{
+		"Name":"fireball",
 		"TargetType":1,
 		"TargetFilter":1,
 		"TargetRange":1,

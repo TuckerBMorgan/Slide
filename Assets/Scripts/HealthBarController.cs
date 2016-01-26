@@ -17,8 +17,10 @@ public class HealthBarController : MonoBehaviour {
     void Update()
     {
         if (character == null) return;
-
-        text.text = character.Health.ToString();
+        if (text == null) return;
+        if (character.currentAction == null)
+            return;
+        text.text = character.Health.ToString() + "--" + character.currentAction.name;
 
         text.GetComponent<RectTransform>().anchoredPosition = RectTransformUtility.WorldToScreenPoint(Camera.main, character.transform.position) - canvas.sizeDelta/2f ;
     }

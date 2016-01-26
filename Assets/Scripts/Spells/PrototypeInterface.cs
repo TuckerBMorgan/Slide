@@ -29,8 +29,15 @@ public abstract class PrototypeInterface{
 
 public class SpawnEventPrototype : PrototypeInterface
 {
+
+    public enum spawnableAIType
+    {
+        dumb
+    }
+    
     public string spawnAsset;
     public int lifeLength;
+    public spawnableAIType controllerType;
 
     public const string EventTag = "SpawnEvent";
 
@@ -38,31 +45,41 @@ public class SpawnEventPrototype : PrototypeInterface
     {
         SpawnEventPrototype proto = new SpawnEventPrototype();
 
-        RecursivePull(Obj, proto);
+        RecursivePull(null, Obj, proto);
 
         return proto;
     }
 
-    private static void RecursivePull(JSONObject obj, SpawnEventPrototype proto)
+    private static void RecursivePull(string Key, JSONObject obj,SpawnEventPrototype proto)
     {
-        switch(obj.type)
+        switch (obj.type)
         {
             case JSONObject.Type.OBJECT:
+                string key;
                 JSONObject j;
-                for (int i = 0; i < obj.list.Count;i++ )
+                for (int i = 0; i < obj.list.Count; i++)
                 {
+                    key = (string)obj.keys[i];
                     j = (JSONObject)obj.list[i];
-                    RecursivePull(j, proto);
+                    RecursivePull(key, j, proto);
                 }
-                    break;
-
-            case JSONObject.Type.STRING:
-                    proto.spawnAsset = obj.str;   
                 break;
-
             case JSONObject.Type.NUMBER:
-                proto.lifeLength = (int)obj.n;
-                    break;
+                if (Key == "LifeLength")
+                {
+                    proto.lifeLength = (int)obj.n;
+                }
+                else if (Key == "Controller")
+                {
+                    proto.controllerType = (spawnableAIType)obj.n;
+                }
+                break;
+            case JSONObject.Type.STRING:
+               if(Key == "Spawnable")
+               {
+                   proto.spawnAsset = obj.str;
+               }
+               break;
         }
     }
 }

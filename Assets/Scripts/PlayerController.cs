@@ -20,11 +20,15 @@ public class PlayerController : Controller
         if (entity.GetEntityType() != "SlideCharacter") return;
         var slide = entity as SlideCharacter;
         if (slide.Team != team) return;
-        if (entity == selectedCharacter) return;
 
-        AbilityButtonControl.Instance.ChangeSelectedCharacter(slide);
-        ConflictController.Instance.RemovePulseMaterial(selectedCharacter.GetComponent<Renderer>());
+        if (selectedCharacter)
+        {
+            ConflictController.Instance.RemovePulseMaterial(selectedCharacter.GetComponent<Renderer>());
+        }
         selectedCharacter = entity as SlideCharacter;
+        AbilityButtonControl.Instance.ChangeSelectedCharacter(slide);
+        GridController.DisplayMoveRange(selectedCharacter);
+
         ConflictController.Instance.AddPulseMaterial(selectedCharacter.GetComponent<Renderer>());
     }
 
@@ -62,12 +66,21 @@ public class PlayerController : Controller
         var getInput = new RuneManager.WaitForSelection(this);
         RuneManager.Singelton.ExecuteRune(getInput);
     }
-
+    
     public override void StartTurn()
     {
         _state = ControllerState.WaitingForSelection;
-        selectedCharacter = crewMembers[0];
-        ConflictController.Instance.AddPulseMaterial(selectedCharacter.GetComponent<Renderer>());
+        for (int i = 0; i < crewMembers.Count;i++ )
+        {
+            var setAp = new RuneManager.SetActionPoint(3, crewMembers[i]);
+            RuneManager.Singelton.ExecuteRune(setAp);
+            crewMembers[i].SetActionPoints(3);
+            crewMembers[i].OnStartTurn();
+        }
+//        selectedCharacter = crewMembers[0];
+       OnSelctionAction(crewMembers[0]);
+
+    //    ConflictController.Instance.AddPulseMaterial(selectedCharacter.GetComponent<Renderer>());
     }
 
     public override void EndTurn()

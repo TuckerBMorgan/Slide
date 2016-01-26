@@ -13,11 +13,13 @@ public class SlideCharacter : MonoBehaviour, Entity {
     public int Team { get { return team; } }
     private int actionPoints;
     private int totalActionPoints;
+    public int TotalActionPoints { get { return totalActionPoints; } set { totalActionPoints = value; } }
     public GameObject healthBar;
     // allowedActions["Move"] and allowedActions["Basic"] as members all characters have
-    private Dictionary<string, CharacterAction> allowedActions;
+    public Dictionary<string, CharacterAction> allowedActions;
     public List<SpellAction> offensiveActions;
-    private CharacterAction currentAction;
+    public CharacterAction currentAction;
+    public SpellAction fallbackAction;
 
 
     public Tile currentTile;
@@ -25,13 +27,15 @@ public class SlideCharacter : MonoBehaviour, Entity {
 	// Use this for initialization
 	void Start ()
 	{
-	    totalActionPoints = actionPoints = 3;     
+        totalActionPoints = 3;
+        actionPoints = 3;    
 	}
 	
     public void OnStartTurn()
     {
-        actionPoints = totalActionPoints;
+        actionPoints = 3;
         currentAction = allowedActions["Move"];
+        fallbackAction = (SpellAction)allowedActions["basic"];
     }
 
     public void AddAction(CharacterAction newAction)
@@ -60,18 +64,19 @@ public class SlideCharacter : MonoBehaviour, Entity {
         offensiveActions = new List<SpellAction>();
         Damage = 10;
         var moveAct = new MoveAction();
-        moveAct.Setup(this);
+        moveAct.Setup(this, 3);
+        moveAct.name = "Move";
         currentAction = moveAct;
         allowedActions.Add("Move", moveAct);
 
         var bs = SpellAction.ParseAndCreateSpell("Spells/basic");
         bs.character = this;
-        allowedActions.Add("Basic", bs);
+        allowedActions.Add("basic", bs);
         offensiveActions.Add(bs);
 
         var fireball = SpellAction.ParseAndCreateSpell("Spells/fireball");
         fireball.character = this;
-        allowedActions.Add("Fireball", fireball);
+        allowedActions.Add("fireball", fireball);
         offensiveActions.Add(fireball);
     }
 
@@ -91,10 +96,22 @@ public class SlideCharacter : MonoBehaviour, Entity {
         }
         currentAction.PreformAction(entity);
 
-        currentAction = allowedActions["Basic"];
+        currentAction = fallbackAction;
         return true;
     }
 
+    public void OnAbilityButtonPressed(string name)
+    {
+        if (allowedActions.ContainsKey(name))
+        {
+                currentAction = allowedActions[name];
+            fallbackAction = (SpellAction)currentAction;
+        }
+        else
+        {
+            currentAction = allowedActions["Move"];
+        }
+    }
     void OnMouseDown()
     {
         if (Input.GetMouseButton(0))
