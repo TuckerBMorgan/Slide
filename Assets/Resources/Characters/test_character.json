@@ -1,0 +1,12 @@
+﻿{
+	"Setup":{
+		"Name":"test",
+		"BaseHealth":100,
+		"BaseArmour":10,
+		"BaseActionPoints":3
+	},
+	"Actions": [
+		"basic",
+		"fireball"
+	]
+}

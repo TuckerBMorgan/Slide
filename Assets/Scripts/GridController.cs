@@ -1,38 +1,30 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 public class GridController : MonoBehaviour
 {
+
+    public static char WalkableTile = '0';
+
+    public static char NonWalkableTile = '|';
 
     private Tile[][] _grid;
     public int sizeOfArray;
     public GameObject tilePrefab;
     public GameObject TestPlayerGameObject;
+    
+    public List<Tile> team1SpawnTiles;
+    public int team1SpawnedPlayers;
+
+    public List<Tile> team2SpawnTiles;
+    public int team2SpawnedPlayers;
 
     public static GridController Singelton;
 
     private void Awake()
     {
-        _grid = new Tile[sizeOfArray][];
-        var pos = new Vector3();
-        for (var x = 0; x < sizeOfArray; x++)
-        {
-            _grid[x] = new Tile[sizeOfArray];
-            for (var y = 0; y < sizeOfArray; y++)
-            {
-                var go = Instantiate(tilePrefab);
-                go.transform.parent = transform;
-                pos.x = x;
-                pos.z = y;
-                pos.y = 0;
-                go.transform.position = pos;
-                _grid[x][y] = go.GetComponent<Tile>();
-                _grid[x][y].SetUpTile(x, y);
-                go.GetComponent<Tile>().keepColor = new Color(Random.value, Random.value, Random.value);
-                go.GetComponent<Tile>().SetToColor();
-            }
-        }
         Singelton = this;
     }
 
@@ -152,7 +144,7 @@ public class GridController : MonoBehaviour
         start.H = dsqrToFinal;
         start.G = 0;
         start.F = dsqrToFinal;
-
+    
 
         openList.Add(start);
 
@@ -183,7 +175,7 @@ public class GridController : MonoBehaviour
 
                     return FinalPath(t);
                 }
-                if(t.Occupied)
+                if(t.Occupied || !t.Walkable)
                 {
                     continue;
                 }
@@ -260,5 +252,98 @@ public class GridController : MonoBehaviour
         return neighbors;
     }
 
+    public Tile[][] ProduceGridFromFile(string fileName)
+    {
+        TextAsset gridAsText = Resources.Load("Maps/" + fileName) as TextAsset;
+        team1SpawnTiles = new List<Tile>();
+        team2SpawnTiles = new List<Tile>();
+        
+        char[] ar = gridAsText.text.ToCharArray();
+
+        int xSize = 0; //int.TryParse(string.Concat([ar[0], ar[1]]));
+        StringBuilder sb = new StringBuilder();
+        sb.Append(ar[0]);
+        sb.Append(ar[1]);
+
+        int.TryParse(sb.ToString(), out xSize);
+        sb.Remove(0, sb.Length);
+        sb.Append(ar[3]);
+        sb.Append(ar[4]);
+        int ySize = 0;
+        int.TryParse(sb.ToString(), out ySize); 
+        
+        
+        _grid = new Tile[xSize][];
+
+        for (int i = 0; i < xSize; i++) 
+        {
+            _grid[i] = new Tile[ySize];
+        }
+        int tileCount = 0;
+        var pos = new Vector3();
+        for (int i = 5; i < ar.Length; i++)
+        {
+            if (ar[i] == '\n' || ar[i] == ',' || ar[i] == ' ' || ar[i] == 13)
+                continue;
+            var go = Instantiate(tilePrefab);
+            
+            if(ar[i] == WalkableTile)
+            {
+                go.GetComponent<Tile>().Walkable = true;
+
+                go.GetComponent<Tile>().keepColor = new Color(Random.value, Random.value, Random.value);
+            }
+            else if(ar[i] == NonWalkableTile)
+            {
+                go.GetComponent<Tile>().Walkable = false;
+
+                go.GetComponent<Tile>().keepColor = Color.black;
+                go.transform.eulerAngles = new Vector3(90,0,0);
+            }
+            else 
+            {
+                go.GetComponent<Tile>().Walkable = true;
+                go.GetComponent<Tile>().SpawnTile = true;
+
+                int team = int.Parse(ar[i].ToString());
+                go.GetComponent<Tile>().Team = team;
+                if(team == 1)
+                {
+                    team1SpawnTiles.Add(go.GetComponent<Tile>());
+                }
+                else
+                {
+                    team2SpawnTiles.Add(go.GetComponent<Tile>());
+                }
+
+                go.GetComponent<Tile>().keepColor = new Color(Random.value, Random.value, Random.value);
+            }
+
+            go.transform.parent = transform;
+            pos.x = tileCount - ((tileCount / xSize) * 10);
+            pos.z = tileCount / ySize;
+            pos.y = 0;
+            go.transform.position = pos;
+            go.GetComponent<Tile>().SetToColor();
+            go.name = pos.x + "," + pos.z;
+
+            _grid[tileCount - ((tileCount / xSize) * 10)][tileCount / ySize] = go.GetComponent<Tile>();
+            _grid[tileCount - ((tileCount / xSize) * 10)][tileCount / ySize].SetUpTile(tileCount - ((tileCount / xSize) * 10),tileCount / ySize);
+            tileCount++;
+        }
+
+        return _grid;
+    }
+
+    public Tile GetTeamSpawnPoints(int team)
+    {
+        if(team == 0)
+        {
+            team1SpawnedPlayers++;
+            return team1SpawnTiles[team1SpawnedPlayers -1];
+        }
+        team2SpawnedPlayers++;
+        return team2SpawnTiles[team2SpawnedPlayers - 1];
+    }
 
 }

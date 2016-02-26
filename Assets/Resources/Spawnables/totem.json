@@ -6,9 +6,9 @@
 		"Team":0
 	},
 	"Triggers":[{
+		"Range":1,
+		"Aura":0,
 		"OnInRange":{
-			"Range":1,
-			"Aura":0
 			"Events":"[{
 				"DamageEvent":{
 					"Amount":10,

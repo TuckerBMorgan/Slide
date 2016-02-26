@@ -26,7 +26,7 @@ public class SlideCharacter : MonoBehaviour, Entity {
 
 	// Use this for initialization
 	void Start ()
-	{
+	{   
         totalActionPoints = 3;
         actionPoints = 3;    
 	}
@@ -50,34 +50,22 @@ public class SlideCharacter : MonoBehaviour, Entity {
             actions.Value.DrawInspector();
         }
     }
-
-    public void Setup(float Health, float Armour, int Actions, Guid guid, int Team)
+    
+    public void Setup(string name, int baseHealth, int baseArmour, int actions, Guid guid, int Team)
     {
-        this.Health = Health;
-        this.Armour = Armour;
-        actions = Actions;
-        this.guid = guid;
-        team = Team;
-
-
         allowedActions = new Dictionary<string, CharacterAction>();
         offensiveActions = new List<SpellAction>();
-        Damage = 10;
+
         var moveAct = new MoveAction();
         moveAct.Setup(this, 3);
         moveAct.name = "Move";
         currentAction = moveAct;
         allowedActions.Add("Move", moveAct);
 
-        var bs = SpellAction.ParseAndCreateSpell("Spells/basic");
-        bs.character = this;
-        allowedActions.Add("basic", bs);
-        offensiveActions.Add(bs);
-
-        var fireball = SpellAction.ParseAndCreateSpell("Spells/fireball");
-        fireball.character = this;
-        allowedActions.Add("fireball", fireball);
-        offensiveActions.Add(fireball);
+        this.Health = baseHealth;
+        this.Armour = baseArmour;
+        actionPoints = actions;
+        team = Team;
     }
 
     public void SetTile(Tile tile)
@@ -89,7 +77,8 @@ public class SlideCharacter : MonoBehaviour, Entity {
     {
         if (entity.GetEntityType() == "Tile")
             currentAction = allowedActions["Move"];
-
+        Debug.Log(name);
+        Debug.Log(entity);
         if (currentAction.ValidateSelection(entity) == false) 
         {
             return false;
@@ -104,7 +93,7 @@ public class SlideCharacter : MonoBehaviour, Entity {
     {
         if (allowedActions.ContainsKey(name))
         {
-                currentAction = allowedActions[name];
+            currentAction = allowedActions[name];
             fallbackAction = (SpellAction)currentAction;
         }
         else

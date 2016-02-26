@@ -96,35 +96,58 @@ public class RuneManager : MonoBehaviour
         public int team;
         public Guid guid;
         public Controller.ControllerType type;
+        public string[] teamList;
 
-        public NewController(int Team, Guid guid, Controller.ControllerType type)
+        public NewController(int Team, Guid guid, Controller.ControllerType type, string[] teamList)
         {
             name = "NewController";
             team = Team;
             this.guid = guid;
             this.type = type;
+            this.teamList = teamList;
         }
 
         public override void Execute(System.Action action)
         {
+            Debug.Log(team);
+            GameObject go;
             switch(type)
             {
                 case Controller.ControllerType.Player:
-                    var go = Resources.Load("Prefabs/PlayerController") as GameObject;
+                    go = Resources.Load("Prefabs/PlayerController") as GameObject;
                     go = Instantiate(go);
                     ConflictController.Instance.Players.Add(team, go.GetComponent<PlayerController>());
                     go.GetComponent<PlayerController>().Setup(team, guid);
                     ConflictController.Instance.AddNewControllerToGame(go.GetComponent<PlayerController>());
                     break;
                 case Controller.ControllerType.AI:
-                    var aiGo = Resources.Load("Prefabs/AIController") as GameObject;
-                    aiGo = Instantiate(aiGo);
-                    ConflictController.Instance.Players.Add(team, aiGo.GetComponent<AiController>());
-                    aiGo.GetComponent<AiController>().Setup(team, guid);
-                    ConflictController.Instance.AddNewControllerToGame(aiGo.GetComponent<AiController>());
+                    go = Resources.Load("Prefabs/AIController") as GameObject;
+                    go = Instantiate(go);
+                    ConflictController.Instance.Players.Add(team, go.GetComponent<AiController>());
+                    go.GetComponent<AiController>().Setup(team, guid);
+                    ConflictController.Instance.AddNewControllerToGame(go.GetComponent<AiController>());
                     break;
             }
-            action();
+            TextAsset text;
+            JSONObject js;
+            JSONObject setup;
+            JSONObject actions;
+            for (int i = 0; i < teamList.Length;i++ )
+            {
+                text = Resources.Load("Characters/" + teamList[i]) as TextAsset;
+                js = new JSONObject(text.text);
+                setup = js["Setup"];
+                actions = js["Actions"];
+
+                List<string> abilites = new List<string>();
+                for(int x = 0;x<actions.list.Count;x++)
+                {
+                    abilites.Add(actions.list[x].str);
+                }
+                var newCharacter = new SpawnCharacterEvent(setup["Name"].str + ":" + team, (int)setup["BaseHealth"].i, (int)setup["BaseArmour"].i, (int)setup["BaseActionPoints"].i, System.Guid.NewGuid(), abilites, GridController.Singelton.GetTeamSpawnPoints(team).position, team);
+                RuneManager.Singelton.ExecuteRune((Rune)newCharacter);
+            }
+                action();
         }
 
         public override void OnGUI()
@@ -133,20 +156,27 @@ public class RuneManager : MonoBehaviour
         }
     }
 
-    public class SpawnEvent : Rune
+    public class SpawnCharacterEvent : Rune
     {
         public string characterName;
         public int team;
+        public int baseHealth;
+        public int baseArmour;
+        public int baseActionPoints;
         public Vector2 spawnPosition;
         public Guid guid;
-        
-        public SpawnEvent(int Team, Vector2 SpawnPosition, string CharacterName, Guid guid)
+        public List<string> abilites;
+
+        public SpawnCharacterEvent(string name, int baseHealth, int baseArmour, int baseActionPoints, Guid guid, List<string> abilites, Vector2 spawnPosition, int team)
         {
-            name = "SpawnEvent";
-            team = Team;
-            spawnPosition = SpawnPosition;
-            characterName = CharacterName;
+            this.characterName = name;
+            this.baseHealth = baseHealth;
+            this.baseArmour = baseArmour;
+            this.baseActionPoints = baseActionPoints;
+            this.abilites = abilites;
             this.guid = guid;
+            this.spawnPosition = spawnPosition;
+            this.team = team;
         }
 
         public override void Execute(System.Action action)
@@ -158,18 +188,25 @@ public class RuneManager : MonoBehaviour
                 y = 0,
                 z = spawnPosition.y
             };
+            
             go = Instantiate(go);
             go.transform.position = spawnPos;
-            go.GetComponent<SlideCharacter>().Setup(100, 100, 2, guid, team);
+            go.GetComponent<SlideCharacter>().Setup(characterName, baseHealth, baseArmour, baseActionPoints, guid, team);
+            go.name = characterName;
+            go.GetComponent<SlideCharacter>().SetTile(GridController.Singelton.GetTile((int)spawnPosition.x, (int)spawnPosition.y));
+
+            for (int i = 0; i < abilites.Count;i++ )
+            {
+                var grantAction = new GrantAction(go.GetComponent<SlideCharacter>(), abilites[i]);
+                RuneManager.Singelton.ExecuteRune(grantAction);
+            }
+
             ConflictController.Instance.Players[team].AddCrewMember(go.GetComponent<SlideCharacter>());
             ConflictController.Instance.CharactersInGame.Add(guid, go.GetComponent<SlideCharacter>());
-            go.GetComponent<SlideCharacter>().SetTile(GridController.Singelton.GetTile((int)spawnPosition.x, (int)spawnPosition.y));
             GridController.Singelton.GetTile((int)spawnPosition.x, (int)spawnPosition.y).Occupied = true;
-            go.name = characterName;
+
             var healthBar = Resources.Load("Prefabs/Health") as GameObject;
-
             healthBar = Instantiate(healthBar);
-
             healthBar.transform.SetParent( UIController.Singelton.transform);
             healthBar.GetComponent<HealthBarController>().character = go.GetComponent<SlideCharacter>();
 
@@ -199,7 +236,20 @@ public class RuneManager : MonoBehaviour
 
         public override void Execute(Action action)
         {
+            var go = Resources.Load("Prefabs/Cylinder") as GameObject;
+            var spawnPos = new Vector3
+            {
+                x = target.GetUnityObject().transform.position.x,
+                y = 0,
+                z = target.GetUnityObject().transform.position.z
+            };
+            go = Instantiate(go);
+
+            go.transform.position = spawnPos;
             
+
+
+
         }
 
         public override void OnGUI()
@@ -380,6 +430,32 @@ public class RuneManager : MonoBehaviour
         }
     }
 
+    public class GrantAction : Rune
+    {
+        public SlideCharacter character;
+        public string actionID;
+
+        public GrantAction(SlideCharacter character, string actionID)
+        {
+            this.character = character;
+            this.actionID = actionID;
+        }
+
+        public override void Execute(Action action)
+        {
+            SpellAction sp = SpellAction.ParseAndCreateSpell(actionID);
+            sp.character = character;
+            character.AddAction(sp);
+            action();
+        }
+
+        public override void OnGUI()
+        {
+            EditorGUILayout.LabelField("GrantAbility, Character: " + character.name + "Abilty id: " + actionID);    
+        }
+        
+    }
+
     public class PresentMoveTiles : Rune
     {
         public SlideCharacter character;
@@ -398,7 +474,7 @@ public class RuneManager : MonoBehaviour
 
         public override void OnGUI()    
         {
-            EditorGUILayout.LabelField("PresentMoveTiles, Character" + character.name + "\n");
+            EditorGUILayout.LabelField("PresentMoveTiles, Character: " + character.name + "\n");
         }
     }
 

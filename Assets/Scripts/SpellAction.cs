@@ -46,7 +46,9 @@ public class SpellAction : CharacterAction {
     public List<PrototypeInterface> protoEvents;
     public List<RuneManager.Rune> runes;
     public AnimBool showSpellAction;
-    
+
+    private static Dictionary<string, SpellAction> allAbilites;
+
     public SpellAction()
     {
         protoEvents = new List<PrototypeInterface>();
@@ -145,10 +147,10 @@ public class SpellAction : CharacterAction {
                 }
 
                 SlideCharacter ch = entity as SlideCharacter;
+
                 switch (targetFilter)
                 {
                     case TargetFilter.Enemy:
-
                         if (ch.Team == character.Team) return false;
                         break;
                     case TargetFilter.Freindly:
@@ -173,8 +175,7 @@ public class SpellAction : CharacterAction {
                 return false;
         }
 
-
-
+         
 
         var tile = entity.getCurrentTile();
         int xDif = Mathf.Abs(tile.X - character.currentTile.X);
@@ -202,6 +203,7 @@ public class SpellAction : CharacterAction {
                 return false;
             }
         }
+        Debug.Log("___");
         return true;
 
     }
@@ -233,7 +235,13 @@ public class SpellAction : CharacterAction {
 
     public static SpellAction ParseAndCreateSpell(string fileName)
     {
-        TextAsset text = Resources.Load(fileName) as TextAsset;
+        if (allAbilites == null)
+            allAbilites = new Dictionary<string, SpellAction>();
+
+        if (allAbilites.ContainsKey(fileName))
+            return allAbilites[fileName];
+        
+        TextAsset text = Resources.Load("Spells/" + fileName) as TextAsset;
 
         JSONObject js = new JSONObject(text.text);
         SpellAction newSpell = new SpellAction();
@@ -281,6 +289,7 @@ public class SpellAction : CharacterAction {
                    break;
            }
         }
+        allAbilites.Add(fileName, newSpell);
 
         return newSpell;
     }

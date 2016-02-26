@@ -20,6 +20,12 @@ public class MoveAction : CharacterAction {
 
         Tile tile = entity as Tile;
 
+        if (tile.Occupied)
+            return false;
+
+        if (!tile.Walkable)
+            return false;
+
         Tile playerTile = character.currentTile;
 
         int xDif = Mathf.Abs(playerTile.X - tile.X);

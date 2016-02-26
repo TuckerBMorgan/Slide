@@ -14,11 +14,19 @@ public class Tile : MonoBehaviour, Entity {
 
     public int Y { get; set; }
 
+    public Vector2 position { get { return new Vector2(X, Y); } }
+
     public bool HasBeenCheckedBySearch { get; set; }
 
     public string Name { get; set; }
 
     public bool Occupied;
+
+    public bool Walkable;
+
+    public bool SpawnTile = false;
+
+    public int Team = -1;
 
     public Color keepColor;
 

@@ -26,6 +26,7 @@ public class PlayerController : Controller
             ConflictController.Instance.RemovePulseMaterial(selectedCharacter.GetComponent<Renderer>());
         }
         selectedCharacter = entity as SlideCharacter;
+    
         AbilityButtonControl.Instance.ChangeSelectedCharacter(slide);
         GridController.DisplayMoveRange(selectedCharacter);
 
