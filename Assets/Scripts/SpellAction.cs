@@ -138,6 +138,7 @@ public class SpellAction : CharacterAction {
     {
         if (character.GetActionPoints() <= 0) return false;
 
+        Debug.Log(character.name);
         switch (targetType)
         {
             case TargetType.Character:

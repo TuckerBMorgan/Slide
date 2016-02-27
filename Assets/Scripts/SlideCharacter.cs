@@ -77,8 +77,11 @@ public class SlideCharacter : MonoBehaviour, Entity {
     {
         if (entity.GetEntityType() == "Tile")
             currentAction = allowedActions["Move"];
-        Debug.Log(name);
-        Debug.Log(entity);
+    
+        if(entity.GetType() == typeof(SlideCharacter))
+        {
+            Debug.Log(((SlideCharacter)entity).name);
+        }
         if (currentAction.ValidateSelection(entity) == false) 
         {
             return false;

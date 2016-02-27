@@ -39,6 +39,7 @@ public class PlayerController : Controller
         if (selectedCharacter == null) return;
         if (selectedCharacter.Team != team) return;
         
+        
         if (selectedCharacter.OnEntitySelection(entity))
         {
             _state = ControllerState.WaitingForActionToFinish;
