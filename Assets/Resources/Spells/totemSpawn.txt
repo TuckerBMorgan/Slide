@@ -1,0 +1,14 @@
+Name = "SpawnTotem"
+TargetType = 0
+TargetFilter = 0
+TargetRange = 1
+Range = 3
+TargetAOE = 0
+
+Events = {{
+			["Type"] = "SpawnEvent",
+            ["Spawnable"] = "totem", 
+            ["LifeLength"] = -1,
+            ["Controller"] = 0
+        }
+}

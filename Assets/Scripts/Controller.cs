@@ -23,6 +23,7 @@ public class Controller : MonoBehaviour
     protected Guid guid;
     protected List<SlideCharacter> crewMembers;
     public List<SlideCharacter> Crew { get { return crewMembers; } }
+    public int Team { get { return team; } }
     public ControllerState _state;
 
     protected SlideCharacter selectedCharacter;
@@ -44,6 +45,11 @@ public class Controller : MonoBehaviour
 	void Update () {
 	
 	}
+
+    public virtual void RevealCharacter(SlideCharacter character)
+    {
+
+    }
 
     public void AddCrewMember(SlideCharacter crew)
     {

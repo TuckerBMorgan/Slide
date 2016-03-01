@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System.Collections;
+using MoonSharp.Interpreter;
 
 public abstract class PrototypeInterface{
     public void ProcessEvent()
@@ -41,46 +42,18 @@ public class SpawnEventPrototype : PrototypeInterface
 
     public const string EventTag = "SpawnEvent";
 
-    public static SpawnEventPrototype Builder(JSONObject Obj)
+    public static SpawnEventPrototype Builder(Table table)
     {
         SpawnEventPrototype proto = new SpawnEventPrototype();
-
-        RecursivePull(null, Obj, proto);
-
+        PullData(table, proto);
         return proto;
     }
 
-    private static void RecursivePull(string Key, JSONObject obj,SpawnEventPrototype proto)
+    private static void PullData(Table table, SpawnEventPrototype proto)
     {
-        switch (obj.type)
-        {
-            case JSONObject.Type.OBJECT:
-                string key;
-                JSONObject j;
-                for (int i = 0; i < obj.list.Count; i++)
-                {
-                    key = (string)obj.keys[i];
-                    j = (JSONObject)obj.list[i];
-                    RecursivePull(key, j, proto);
-                }
-                break;
-            case JSONObject.Type.NUMBER:
-                if (Key == "LifeLength")
-                {
-                    proto.lifeLength = (int)obj.n;
-                }
-                else if (Key == "Controller")
-                {
-                    proto.controllerType = (spawnableAIType)obj.n;
-                }
-                break;
-            case JSONObject.Type.STRING:
-               if(Key == "Spawnable")
-               {
-                   proto.spawnAsset = obj.str;
-               }
-               break;
-        }
+        proto.lifeLength = (int)table.Get("LifeLength").Number;
+        proto.controllerType = (spawnableAIType)(int)table.Get("LifeLength").Number;
+        proto.spawnAsset = table.Get("Spawnable").String;
     }
 }
 
@@ -91,17 +64,23 @@ public class DamageEventPrototype : PrototypeInterface
     public RuneManager.DamageEvent.DamageType damageType;
     public const string EventTag = "DamageEvent";
 
-    public static DamageEventPrototype Builder(JSONObject Obj)
+    public static DamageEventPrototype Builder(Table table)
     {
         DamageEventPrototype proto = new DamageEventPrototype();
-
-        RecursivePull(null, Obj, proto);
-
+        DataPull(table, proto);
         return proto;
+    }
+
+    private static void DataPull(Table table, DamageEventPrototype proto)
+    {
+
+        proto.amount = (int)table.Get("Amount").Number;
+        proto.damageType = (RuneManager.DamageEvent.DamageType)(int)table.Get("DamgeType").Number;
     }
 
     public override void DrawEditor()
     {
+        
         GUI.backgroundColor = Color.red;
 
         EditorGUILayout.LabelField("Damage Event");
@@ -110,34 +89,9 @@ public class DamageEventPrototype : PrototypeInterface
         damageType = (RuneManager.DamageEvent.DamageType)EditorGUILayout.EnumPopup("Damage Type", damageType);
         EditorGUILayout.EndVertical();
         GUI.backgroundColor = Color.white;
+        
     }
 
-    private static void RecursivePull(string Key, JSONObject obj, DamageEventPrototype proto)
-    {
-        switch (obj.type)
-        {
-            case JSONObject.Type.OBJECT:
-                string key;
-                JSONObject j;
-                for (int i = 0; i < obj.list.Count; i++)
-                {
-                    key = (string)obj.keys[i];
-                    j = (JSONObject)obj.list[i];
-                    RecursivePull(key, j, proto);
-                }
-                break;
-            case JSONObject.Type.NUMBER:
-                if (Key == "Amount")
-                {
-                    proto.amount = (int)obj.n;
-                }
-                else if (Key == "DamageType")
-                {
-                    proto.damageType = (RuneManager.DamageEvent.DamageType)obj.n;
-                }
-                break;
-        }
-    }
 
     public override string convertToJSONString()
     {
@@ -171,42 +125,20 @@ public class BuffCastEventPrototype : PrototypeInterface
     public int amount;
     public const string EventTag = "BuffCastEvent";
 
-    public static BuffCastEventPrototype Builder(JSONObject Obj)
+    public static BuffCastEventPrototype Builder(Table table)
     {
         BuffCastEventPrototype proto = new BuffCastEventPrototype();
-        RecursivePull(null, Obj, proto);
-        return proto;
+        PullData(table, proto);    
+        return null;
     }
 
-    private static void RecursivePull(string Key, JSONObject obj, BuffCastEventPrototype proto)
+
+    private static void PullData(Table table, BuffCastEventPrototype proto)
     {
-        switch (obj.type)
-        {
-            case JSONObject.Type.OBJECT:
-                string key;
-                JSONObject j;
-                for (int i = 0; i < obj.list.Count; i++)
-                {
-                    key = (string)obj.keys[i];
-                    j = (JSONObject)obj.list[i];
-                    RecursivePull(key, j, proto);
-                }
-                break;
-            case JSONObject.Type.NUMBER:
-                if(Key == "timer")
-                {
-                    proto.timer = (int)obj.n;
-                }
-                else if(Key == "stat")
-                {
-                    proto.stat = (stats)obj.n;
-                }
-                else if(Key == "amount")
-                {
-                    proto.amount = (int)obj.n;
-                }
-                break;
-        }
+        proto.timer = (int)table.Get("timer").Number;
+        proto.stat = (stats)(int)table.Get("stat").Number;
+        proto.amount = (int)table.Get("amount").Number;
     }
+
 
 }

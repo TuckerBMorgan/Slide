@@ -20,7 +20,7 @@ public class SlideCharacter : MonoBehaviour, Entity {
     public List<SpellAction> offensiveActions;
     public CharacterAction currentAction;
     public SpellAction fallbackAction;
-
+    public const int VisionRange = 3;
 
     public Tile currentTile;
 
@@ -78,10 +78,6 @@ public class SlideCharacter : MonoBehaviour, Entity {
         if (entity.GetEntityType() == "Tile")
             currentAction = allowedActions["Move"];
     
-        if(entity.GetType() == typeof(SlideCharacter))
-        {
-            Debug.Log(((SlideCharacter)entity).name);
-        }
         if (currentAction.ValidateSelection(entity) == false) 
         {
             return false;
@@ -97,7 +93,10 @@ public class SlideCharacter : MonoBehaviour, Entity {
         if (allowedActions.ContainsKey(name))
         {
             currentAction = allowedActions[name];
-            fallbackAction = (SpellAction)currentAction;
+            if (currentAction.GetType() == typeof(SpellAction))
+            {
+                fallbackAction = (SpellAction)currentAction;
+            }
         }
         else
         {

@@ -2,7 +2,6 @@ C:\Users\tucker\Slide\Slide\Temp\bin\Debug\Assembly-CSharp.dll
 C:\Users\tucker\Slide\Slide\Temp\bin\Debug\Assembly-CSharp.pdb
 C:\Users\tucker\Slide\Slide\Temp\bin\Debug\Mono.Cecil.dll
 C:\Users\tucker\Slide\Slide\Temp\bin\Debug\UnityEditor.dll
-C:\Users\tucker\Slide\Slide\Temp\bin\Debug\UnityEditor.iOS.Extensions.Xcode.dll
 C:\Users\tucker\Slide\Slide\Temp\bin\Debug\UnityEngine.dll
 C:\Users\tucker\Slide\Slide\Temp\bin\Debug\UnityEngine.Networking.dll
 C:\Users\tucker\Slide\Slide\Temp\bin\Debug\UnityEngine.UI.dll
@@ -20,3 +19,4 @@ C:\Users\tucker\Slide\Slide\Temp\bin\Debug\UnityEngine.Networking.xml
 C:\Users\tucker\Slide\Slide\obj\Debug\Assembly-CSharp.csprojResolveAssemblyReference.cache
 C:\Users\tucker\Slide\Slide\obj\Debug\Assembly-CSharp.dll
 C:\Users\tucker\Slide\Slide\obj\Debug\Assembly-CSharp.pdb
+C:\Users\tucker\Slide\Slide\Temp\bin\Debug\MoonSharp.Interpreter.dll

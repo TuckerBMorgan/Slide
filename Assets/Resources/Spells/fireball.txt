@@ -1,0 +1,13 @@
+Name = "fireball"
+TargetType = 1
+TargetFilter = 1
+TargetRange = 1
+Range = 3
+TargetAOE = 0
+
+Events = {{
+			["Type"] = "DamageEvent",
+			["Amount"] = 29, 
+			["DamageType"] = 0
+        }
+}

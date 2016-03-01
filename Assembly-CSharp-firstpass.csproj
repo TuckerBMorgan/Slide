@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.20506</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <RootNamespace></RootNamespace>
+    <ProjectGuid>{984BE45E-392C-EB3D-F23A-74E936C7C757}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <AssemblyName>Assembly-CSharp-firstpass</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <BaseDirectory>Assets</BaseDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Temp\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;UNITY_5_3_3;UNITY_5_3;UNITY_5;ENABLE_NEW_BUGREPORTER;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_DUCK_TYPING;ENABLE_FRAME_DEBUGGER;ENABLE_GENERICS;ENABLE_HOME_SCREEN;ENABLE_IMAGEEFFECTS;ENABLE_LIGHT_PROBES_LEGACY;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_PLUGIN_INSPECTOR;ENABLE_SHADOWS;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;ENABLE_SPRITERENDERER_FLIPPING;ENABLE_SPRITES;ENABLE_SPRITE_POLYGON;ENABLE_TERRAIN;ENABLE_RAKNET;ENABLE_UNET;ENABLE_UNITYEVENTS;ENABLE_VR;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_HUB;ENABLE_CLOUD_PROJECT_ID;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_METRICS;ENABLE_EDITOR_METRICS_CACHING;INCLUDE_DYNAMIC_GI;INCLUDE_GI;INCLUDE_IL2CPP;INCLUDE_DIRECTX12;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;ENABLE_LOCALIZATION;ENABLE_ANDROID_ATLAS_ETC1_COMPRESSION;ENABLE_EDITOR_TESTS_RUNNER;UNITY_STANDALONE_WIN;UNITY_STANDALONE;ENABLE_SUBSTANCE;ENABLE_TEXTUREID_MAP;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_LOG_MIXED_STACKTRACE;ENABLE_UNITYWEBREQUEST;ENABLE_EVENT_QUEUE;ENABLE_CLUSTERINPUT;ENABLE_WEBSOCKET_HOST;ENABLE_MONO;ENABLE_PROFILER;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>0169</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>Temp\bin\Release\</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>0169</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="UnityEngine">
+      <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor">
+      <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+     <Compile Include="Assets\Plugins\Lua\Assets\Example\ExampleBehaviour.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\Example\TestBehaviour.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KeraLua\CharPtr.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KeraLua\DynamicLibraryPath.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KeraLua\Lua.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KeraLua\LuaDebug.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KeraLua\LuaState.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KeraLua\LuaTag.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KeraLua\NativeMethods.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\CharPtr.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\LuaDebug.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\LuaState.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\LuaTag.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\lapi.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\lauxlib.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\lbaselib.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\lcode.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\ldblib.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\ldebug.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\ldo.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\ldump.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\lfunc.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\lgc.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\linit.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\liolib.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\llex.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\llimits.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\lmathlib.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\lmem.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\lnet.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\loadlib.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\lobject.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\lopcodes.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\loslib.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\lparser.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\lstate.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\lstring.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\lstrlib.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\ltable.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\ltablib.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\ltm.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\lua.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\luaconf.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\lualib.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\lundump.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\lvm.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\lzio.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\print.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\KopiLua\printf\Tools.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\CheckType.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\Config\NLuaConfig.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\Event\DebugHookEventArgs.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\Event\EventCodes.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\Event\EventMasks.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\Event\HookExceptionEventArgs.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\Exceptions\LuaException.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\Exceptions\LuaScriptException.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\Extensions\GeneralExtensions.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\GenerateEventAssembly\ClassGenerator.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\GenerateEventAssembly\CodeGeneration.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\GenerateEventAssembly\DelegateGenerator.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\GenerateEventAssembly\ILuaGeneratedType.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\GenerateEventAssembly\LuaClassType.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\Lua.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\LuaBase.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\LuaFunction.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\LuaGlobalAttribute.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\LuaHideAttribute.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\LuaLib\GCOptions.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\LuaLib\LuaEnums.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\LuaLib\LuaIndexes.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\LuaLib\LuaLib.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\LuaLib\LuaTypes.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\LuaLib\References.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\LuaRegistrationHelper.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\LuaTable.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\LuaUserData.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\Metatables.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\Method\EventHandlerContainer.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\Method\LuaClassHelper.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\Method\LuaDelegate.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\Method\LuaEventHandler.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\Method\LuaMethodWrapper.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\Method\MethodArgs.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\Method\MethodCache.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\Method\RegisterEventHandler.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\ObjectTranslator.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\ObjectTranslatorPool.cs" />
+     <Compile Include="Assets\Plugins\Lua\Assets\NLua\ProxyType.cs" />
+     <None Include="Assets\JSON\readme.txt" />
+     <None Include="Assets\Resources\Spells\notes.txt" />
+     <None Include="Assets\Shaders\SelecedShader.shader" />
+ <Reference Include="UnityEngine.UI">
+ <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.Networking">
+ <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
+ </Reference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  
+</Project>

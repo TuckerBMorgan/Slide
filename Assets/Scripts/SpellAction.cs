@@ -4,8 +4,9 @@ using System.IO;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.AnimatedValues;
-
-
+using MoonSharp.Interpreter;
+using System.Linq;
+using System;
 public enum TargetType
 {
     Tile,
@@ -35,7 +36,8 @@ public enum TargetFilter
     Any
 }
 
-public class SpellAction : CharacterAction {
+public class SpellAction : CharacterAction
+{
 
     public TargetType targetType;
     public TargetFilter targetFilter;
@@ -53,13 +55,13 @@ public class SpellAction : CharacterAction {
     {
         protoEvents = new List<PrototypeInterface>();
         showSpellAction = new AnimBool(false);
-        
+
         runes = new List<RuneManager.Rune>();
     }
     public override void DrawInspector()
     {
-        showSpellAction.target = EditorGUILayout.ToggleLeft(name, showSpellAction.target) ;
-        
+        showSpellAction.target = EditorGUILayout.ToggleLeft(name, showSpellAction.target);
+
 
         if (EditorGUILayout.BeginFadeGroup(showSpellAction.faded))
         {
@@ -68,6 +70,7 @@ public class SpellAction : CharacterAction {
             EditorGUILayout.LabelField("TargetRange: " + targetRange.ToString());
             EditorGUILayout.LabelField("TargetAOE: " + targetAOE.ToString());
             EditorGUILayout.LabelField("Range: " + range.ToString());
+            EditorGUILayout.LabelField("Number of action events: " + protoEvents.Count.ToString());
             for (int i = 0; i < protoEvents.Count; i++)
             {
                 protoEvents[i].DrawInspector();
@@ -114,13 +117,13 @@ public class SpellAction : CharacterAction {
         obj += "\t\t\"TargetAOE\":" + (int)targetAOE + "\n";
         obj += "\t}";
 
-        if(protoEvents.Count > 0)
+        if (protoEvents.Count > 0)
         {
             obj += ",\n";
             obj += "\t\"Events\": [{\n";
-            for(int i = 0;i<protoEvents.Count;i++)
+            for (int i = 0; i < protoEvents.Count; i++)
             {
-                if(i != 0)
+                if (i != 0)
                 {
                     obj += ",\n";
                 }
@@ -137,8 +140,6 @@ public class SpellAction : CharacterAction {
     public override bool ValidateSelection(Entity entity)
     {
         if (character.GetActionPoints() <= 0) return false;
-
-        Debug.Log(character.name);
         switch (targetType)
         {
             case TargetType.Character:
@@ -176,7 +177,7 @@ public class SpellAction : CharacterAction {
                 return false;
         }
 
-         
+
 
         var tile = entity.getCurrentTile();
         int xDif = Mathf.Abs(tile.X - character.currentTile.X);
@@ -199,23 +200,22 @@ public class SpellAction : CharacterAction {
         }
         else
         {
-            if(total > (range * 2))
+            if (total > (range * 2))
             {
                 return false;
             }
         }
-        Debug.Log("___");
         return true;
 
     }
 
     public override void PreformAction(Entity entity)
     {
-        for(int i = 0;i<protoEvents.Count;i++)
+        for (int i = 0; i < protoEvents.Count; i++)
         {
             runes.Add(protoEvents[i].CreateRune(character, entity));
         }
-        for(int i = 0;i<runes.Count;i++)
+        for (int i = 0; i < runes.Count; i++)
         {
             RuneManager.Singelton.ExecuteRune(runes[i]);
         }
@@ -226,73 +226,61 @@ public class SpellAction : CharacterAction {
 
     public override void StartAction()
     {
-       
+
     }
 
     public override void EndAction()
     {
-        
+
     }
 
     public static SpellAction ParseAndCreateSpell(string fileName)
     {
+
+
+
         if (allAbilites == null)
             allAbilites = new Dictionary<string, SpellAction>();
 
-        if (allAbilites.ContainsKey(fileName))
-            return allAbilites[fileName];
-        
-        TextAsset text = Resources.Load("Spells/" + fileName) as TextAsset;
-
-        JSONObject js = new JSONObject(text.text);
+        LuaFile file = new LuaFile();
+        file.Setup( "Spells/" + fileName);
         SpellAction newSpell = new SpellAction();
-        
-        JSONObject setup = js["Setup"];
-
-        newSpell.name = setup["Name"].str;
-        int targetType = (int)setup["TargetType"].i;
-        int targetFilter = (int)setup["TargetFilter"].i;
-        int targetRange = (int)setup["TargetRange"].i;
-        int targetAOE = (int)setup["TargetAOE"].i;
-
-        newSpell.targetType = (TargetType)targetType;
-        newSpell.targetFilter = (TargetFilter)targetFilter;
-        newSpell.targetRange = (TargetRange)targetRange;
+        newSpell.name = file.GetValue("Name").ToString();
+        newSpell.targetType = (TargetType)Convert.ToInt32(file.GetValue("TargetType"));
+        newSpell.targetFilter = (TargetFilter)Convert.ToInt32(file.GetValue("TargetFilter"));
+        newSpell.targetRange = (TargetRange)Convert.ToInt32(file.GetValue("TargetRange"));
+        newSpell.targetAOE = (TargetAOE)Convert.ToInt32(file.GetValue("TargetAOE"));
         if(newSpell.targetRange == TargetRange.Range)
         {
-            newSpell.range = (int)setup["Range"].i;
+            newSpell.range = Convert.ToInt32(file.GetValue("Range"));
         }
         else
         {
             newSpell.range = 1; 
         }
-        newSpell.targetAOE = (TargetAOE)targetAOE;
-       
 
-
-        JSONObject arra = js["Events"];
-        
-        
-
-        foreach(JSONObject key in arra.list)
+        Table table = (Table)file.GetValue("Events");
+        Table insideTable;
+        foreach(DynValue dy in table.Values)
         {
-           switch(key.keys[0])
-           {
-               case DamageEventPrototype.EventTag:
-                   newSpell.protoEvents.Add(DamageEventPrototype.Builder(key));
-                   break;
-
-               case SpawnEventPrototype.EventTag:
-                   newSpell.protoEvents.Add(SpawnEventPrototype.Builder(key));
-                   break;
-
-               case BuffCastEventPrototype.EventTag:
-                   break;
-           }
+            insideTable = dy.Table;
+            switch (insideTable.Get("Type").String)
+            {
+                case "DamageEvent":
+                    newSpell.protoEvents.Add(DamageEventPrototype.Builder(insideTable));
+                    break;
+                case "SpawnEvent":
+                    newSpell.protoEvents.Add(SpawnEventPrototype.Builder(insideTable));
+                    break;
+                case "BuffCastEvent":
+                    newSpell.protoEvents.Add(BuffCastEventPrototype.Builder(insideTable));
+                    break;
+                default:
+                    break;
+            }
+        
         }
-        allAbilites.Add(fileName, newSpell);
-
-        return newSpell;
+            return newSpell;
     }
 
 }

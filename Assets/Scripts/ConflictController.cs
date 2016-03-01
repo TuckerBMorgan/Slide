@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 
+using MoonSharp.Interpreter;
 
 public class ConflictController : MonoBehaviour
 {
@@ -13,10 +15,11 @@ public class ConflictController : MonoBehaviour
     public AbilityButtonControl abilityButtonControl;
     public Material pulseTest;
     public GridController gridController;
-    
+
     public Entity selectedEntity;
 
     public int TurnOrder;
+    
 
     public static ConflictController Instance;
 
@@ -26,10 +29,13 @@ public class ConflictController : MonoBehaviour
     {
         Instance = this;
     }
+    
 
 
 	// Use this for initialization
 	void Start () {
+
+
         ControllersInGame = new List<Controller>();
         Players = new Dictionary<int, Controller>();
         CharactersInGame = new Dictionary<Guid, SlideCharacter>();
@@ -47,11 +53,13 @@ public class ConflictController : MonoBehaviour
         
         TurnOrder = -1;
         CurrentController = ControllersInGame[0];
+        TickGame();
+
         var firstTurn = new RuneManager.RotateTurnForController(CurrentController);
         RuneManager.Singelton.ExecuteRune(firstTurn);
         
         AbilityButtonControl.Instance.ChangeSelectedCharacter(CurrentController.Crew[0]);
-
+        
         /*
         ControllersInGame =  new List<Controller>();
 	    TurnOrder = -1;
@@ -130,5 +138,24 @@ public class ConflictController : MonoBehaviour
         
         newMats.Remove(pulseTest);
         rend.GetComponent<Renderer>().sharedMaterials = newMats.ToArray(); 
+    }
+
+    public void TickGame()
+    {
+        PreformVisionCheck();
+    }
+    
+    private void PreformVisionCheck()
+    {
+        Tile[][] grid = GridController.Singelton.GetGrid();
+                
+        for(int i = 0;i<ControllersInGame.Count;i++)
+        {
+            Controller cc = ControllersInGame[i];
+            for(int x = 0;x<cc.Crew.Count;x++)
+            {
+                
+            }
+        }
     }
 }

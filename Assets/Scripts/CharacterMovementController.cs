@@ -109,6 +109,7 @@ public class CharacterMovementController : MonoBehaviour{
                             CharacterMovementController.currentMovementState = new Idle(CharacterMovementController);
                             if (act != null)
                             {
+
                                 act();
                             }
                         }

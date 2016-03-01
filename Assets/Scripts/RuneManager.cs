@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
-
+using MoonSharp.Interpreter;
 
 public class RuneManager : MonoBehaviour
 {
@@ -17,6 +17,7 @@ public class RuneManager : MonoBehaviour
     public static RuneManager Singelton;
 
     public int currentCallbacks;
+
 
     void Awake()
     {
@@ -68,8 +69,7 @@ public class RuneManager : MonoBehaviour
     }
 
     public void CallbackNumberDown()
-    {
-        currentCallbacks--;
+    {   currentCallbacks--;
         if (currentCallbacks != 0) return;
         if (runePump.Count > 0)
         {
@@ -87,6 +87,7 @@ public class RuneManager : MonoBehaviour
         public string name;
         public abstract void OnGUI();
         public abstract void Execute(System.Action action);
+        public abstract bool CanSeeRune(Controller cc);
     }
 
     
@@ -109,7 +110,6 @@ public class RuneManager : MonoBehaviour
 
         public override void Execute(System.Action action)
         {
-            Debug.Log(team);
             GameObject go;
             switch(type)
             {
@@ -128,26 +128,32 @@ public class RuneManager : MonoBehaviour
                     ConflictController.Instance.AddNewControllerToGame(go.GetComponent<AiController>());
                     break;
             }
-            TextAsset text;
-            JSONObject js;
-            JSONObject setup;
-            JSONObject actions;
+            LuaFile file;
+            Table table;
             for (int i = 0; i < teamList.Length;i++ )
-            {
-                text = Resources.Load("Characters/" + teamList[i]) as TextAsset;
-                js = new JSONObject(text.text);
-                setup = js["Setup"];
-                actions = js["Actions"];
+            {   
+                file = new LuaFile();
+                file.Setup("Characters/" + teamList[i]);
+                table = (Table)file.GetValue("Actions");
+
 
                 List<string> abilites = new List<string>();
-                for(int x = 0;x<actions.list.Count;x++)
+                foreach(DynValue dy in table.Values)
                 {
-                    abilites.Add(actions.list[x].str);
+                    abilites.Add(dy.String);
                 }
-                var newCharacter = new SpawnCharacterEvent(setup["Name"].str + ":" + team, (int)setup["BaseHealth"].i, (int)setup["BaseArmour"].i, (int)setup["BaseActionPoints"].i, System.Guid.NewGuid(), abilites, GridController.Singelton.GetTeamSpawnPoints(team).position, team);
+                for(int x = 0;x<table.Length;x++)
+                {
+                //    Debug.Log(table.Get(x).String);
+                }
+                var newCharacter = new SpawnCharacterEvent(file.GetValue("Name").ToString() + ":" + team,Convert.ToInt32( file.GetValue("BaseHealth")),Convert.ToInt32(file.GetValue("BaseArmour")), Convert.ToInt32( file.GetValue("BaseActionPoints")), System.Guid.NewGuid(), abilites, GridController.Singelton.GetTeamSpawnPoints(team).position, team);
                 RuneManager.Singelton.ExecuteRune((Rune)newCharacter);
             }
                 action();
+        }
+        public override bool CanSeeRune(Controller cc)
+        {
+            return true;    
         }
 
         public override void OnGUI()
@@ -213,6 +219,19 @@ public class RuneManager : MonoBehaviour
             action();
         }
 
+        public override bool CanSeeRune(Controller cc)
+        {
+            if(cc.Team == team)
+            {
+                return true;
+            }
+            else
+            {
+
+                return false;
+            }
+        }
+
         public override void OnGUI()
         {
             EditorGUILayout.LabelField("SpawnEvent, CharacterName: " + characterName +" Team: " + team + " GUID: " + guid + "\n");
@@ -246,10 +265,11 @@ public class RuneManager : MonoBehaviour
             go = Instantiate(go);
 
             go.transform.position = spawnPos;
-            
+        }
 
-
-
+        public override bool CanSeeRune(Controller cc)
+        {
+            return true;
         }
 
         public override void OnGUI()
@@ -293,6 +313,11 @@ public class RuneManager : MonoBehaviour
             action();
         }
 
+        public override bool CanSeeRune(Controller cc)
+        {
+            return true;
+        }
+
         public override void OnGUI()
         {
             EditorGUILayout.LabelField("Damage Events, Origin" + origin.name + " target: " + target.name + " Amount: " + amount + "\n");
@@ -318,6 +343,11 @@ public class RuneManager : MonoBehaviour
             mover.GetComponent<CharacterMovementController>().SetMoveTargetAndGo(endTile, action);
             startTile.Occupied = false;
             endTile.Occupied = true;
+        }
+
+        public override bool CanSeeRune(Controller cc)
+        {
+            return true;
         }
 
         public override void OnGUI()
@@ -353,6 +383,11 @@ public class RuneManager : MonoBehaviour
             action();
         }
 
+        public override bool CanSeeRune(Controller cc)
+        {
+            return true;
+        }
+
         public override void OnGUI()
         {
             EditorGUILayout.LabelField("RotateTurnForController, " + currentController.name + "\n");
@@ -371,6 +406,11 @@ public class RuneManager : MonoBehaviour
         public override void Execute(System.Action action)
         {
             action();
+        }
+
+        public override bool CanSeeRune(Controller cc)
+        {
+            return true;
         }
 
         public override void OnGUI()
@@ -396,6 +436,11 @@ public class RuneManager : MonoBehaviour
             action();
             var checkAp = new CheckActionPoints(character.Team);
             RuneManager.Singelton.ExecuteRune(checkAp);
+        }
+
+        public override bool CanSeeRune(Controller cc)
+        {
+            return true;
         }
 
         public override void OnGUI()
@@ -424,6 +469,11 @@ public class RuneManager : MonoBehaviour
                 action();
         }
 
+        public override bool CanSeeRune(Controller cc)
+        {
+            return true;    
+        }
+
         public override void OnGUI()
         {
             EditorGUILayout.LabelField("CheckActionPoints," + "Team:" + team + "\n");
@@ -449,6 +499,11 @@ public class RuneManager : MonoBehaviour
             action();
         }
 
+        public override bool CanSeeRune(Controller cc)
+        {
+            return true;
+        }
+
         public override void OnGUI()
         {
             EditorGUILayout.LabelField("GrantAbility, Character: " + character.name + "Abilty id: " + actionID);    
@@ -466,10 +521,15 @@ public class RuneManager : MonoBehaviour
         }
 
         public override void Execute(Action action)
-        {
+         {
             GridController.DisplayMoveRange(character);
 
             action();
+        }
+
+        public override bool CanSeeRune(Controller cc)
+        {
+            return true;    
         }
 
         public override void OnGUI()    
@@ -478,5 +538,36 @@ public class RuneManager : MonoBehaviour
         }
     }
 
+
+    public class RevealRune : Rune
+    {
+        public SlideCharacter character;
+        public int team;
+        public RevealRune(SlideCharacter character, int team)
+        {
+            this.character = character;
+            this.team = team;
+        }
+
+        public override void Execute(Action action)
+        {
+            ConflictController.Instance.ControllersInGame[team].RevealCharacter(character);
+            action();
+        }
+
+        public override bool CanSeeRune(Controller cc)
+        {
+            if(cc.Team == team)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public override void OnGUI()
+        {
+            EditorGUILayout.LabelField("RevealRune, Character: " + character.name + " to team: " + team);
+        }
+    }
 
 }
