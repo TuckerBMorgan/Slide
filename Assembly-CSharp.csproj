@@ -54,6 +54,7 @@
      <Compile Include="Assets\Scripts\ConflictController.cs" />
      <Compile Include="Assets\Scripts\Controller.cs" />
      <Compile Include="Assets\Scripts\CurrentController.cs" />
+     <Compile Include="Assets\Scripts\EnityManager.cs" />
      <Compile Include="Assets\Scripts\EntityPrototype.cs" />
      <Compile Include="Assets\Scripts\GameEngine.cs" />
      <Compile Include="Assets\Scripts\GridController.cs" />

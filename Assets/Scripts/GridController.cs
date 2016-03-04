@@ -346,4 +346,71 @@ public class GridController : MonoBehaviour
         return team2SpawnTiles[team2SpawnedPlayers - 1];
     }
 
+    public List<Tile> Bresenhams(Tile a, Tile b)
+    {
+        List<Tile> tiles = new List<Tile>();
+        tiles.Add(a);
+
+        float x1 = a.X;
+        float y1 = a.Y;
+        float x2 = b.X;
+        float y2 = b.Y;
+
+        bool steep = (Mathf.Abs(y2 - y1) > Mathf.Abs(x2 - x1));
+
+        if(steep)
+        {
+            float tempx = x1;
+            x1 = y1;
+            y1 = tempx;
+
+            tempx = x2;
+            x2 = y2;
+            y2 = tempx;
+        }
+        if(x1 > x2)
+        {
+            float tempx = x1;
+            x1 = x2;
+            x2 = tempx;
+
+            tempx = y2;
+            y2 = y1;
+            y1 = tempx;
+        }
+
+
+        float dx = x2 - x1;
+        float dy = Mathf.Abs(y2 - y1);
+
+        float error = dx / 2.0f;
+        int ystep = (y1 < y2) ? 1 : -1;
+        int y = (int)y1;
+
+        int maxX = (int)x2;
+
+        for (int x = (int)x1; x < maxX;x++)
+        {
+            if(steep)
+            {
+                tiles.Add(_grid[y][x]);
+            }
+            else
+            {
+                tiles.Add(_grid[x][y]);
+            }
+
+            error -= dy;
+
+            if(error < 0)
+            {
+                y += ystep;
+                error += dx;
+            }
+        }
+
+
+            return tiles;
+    }
+
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
+using System.Linq;
 using MoonSharp.Interpreter;
 
 public class ConflictController : MonoBehaviour
@@ -19,7 +19,7 @@ public class ConflictController : MonoBehaviour
     public Entity selectedEntity;
 
     public int TurnOrder;
-    
+
 
     public static ConflictController Instance;
 
@@ -29,19 +29,18 @@ public class ConflictController : MonoBehaviour
     {
         Instance = this;
     }
-    
 
 
-	// Use this for initialization
-	void Start () {
 
-
+    // Use this for initialization
+    void Start()
+    {
         ControllersInGame = new List<Controller>();
         Players = new Dictionary<int, Controller>();
         CharactersInGame = new Dictionary<Guid, SlideCharacter>();
 
         GridController.Singelton.ProduceGridFromFile("test_map");
-        
+
         string[] teamList = new string[2];
         teamList[0] = "test_character";
         teamList[1] = "test_character";
@@ -50,16 +49,25 @@ public class ConflictController : MonoBehaviour
 
         var AiCon = new RuneManager.NewController(1, System.Guid.NewGuid(), Controller.ControllerType.AI, teamList);
         RuneManager.Singelton.ExecuteRune(AiCon);
-        
+
         TurnOrder = -1;
         CurrentController = ControllersInGame[0];
         TickGame();
 
         var firstTurn = new RuneManager.RotateTurnForController(CurrentController);
         RuneManager.Singelton.ExecuteRune(firstTurn);
-        
+
         AbilityButtonControl.Instance.ChangeSelectedCharacter(CurrentController.Crew[0]);
-        
+
+
+        SlideCharacter cs = CurrentController.Crew[0];
+        SlideCharacter sc2 = ControllersInGame[1].Crew[0];
+        List<Tile> tiles = GridController.Singelton.Bresenhams(cs.getCurrentTile(), sc2.getCurrentTile());
+        for (int i = 0; i < tiles.Count; i++)
+        {
+            tiles[i].transform.position += new Vector3(0, 20, 0);
+        }
+
         /*
         ControllersInGame =  new List<Controller>();
 	    TurnOrder = -1;
@@ -91,11 +99,12 @@ public class ConflictController : MonoBehaviour
         AbilityButtonControl.Instance.ChangeSelectedCharacter(CurrentController.Crew[0]);
         */
     }
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
 
     //PC: Any Left Click on an Entity 
     public void OnSelectionAction(Entity entity)
@@ -131,30 +140,58 @@ public class ConflictController : MonoBehaviour
     {
         var mats = rend.sharedMaterials;
         var newMats = new List<Material>();
-        for (var i = 0; i < mats.Length;i++ )
+        for (var i = 0; i < mats.Length; i++)
         {
             newMats.Add(mats[i]);
         }
-        
+
         newMats.Remove(pulseTest);
-        rend.GetComponent<Renderer>().sharedMaterials = newMats.ToArray(); 
+        rend.GetComponent<Renderer>().sharedMaterials = newMats.ToArray();
     }
 
     public void TickGame()
     {
         PreformVisionCheck();
     }
-    
+
+
     private void PreformVisionCheck()
     {
-        Tile[][] grid = GridController.Singelton.GetGrid();
-                
-        for(int i = 0;i<ControllersInGame.Count;i++)
+        List<Tile> tiles = new List<Tile>();
+
+        for (int i = 0; i < ControllersInGame.Count; i++)
         {
             Controller cc = ControllersInGame[i];
-            for(int x = 0;x<cc.Crew.Count;x++)
+            for (int x = 0; x < cc.Crew.Count; x++)
             {
-                
+                for (int o = 0; o < ControllersInGame.Count; o++)
+                {
+                    if (cc.Team == ControllersInGame[o].Team)
+                        continue;
+
+                    for (int g = 0; g < ControllersInGame[o].Crew.Count; g++)
+                    {
+                        tiles = GridController.Singelton.Bresenhams(cc.Crew[x].getCurrentTile(), ControllersInGame[o].Crew[g].getCurrentTile());
+                        for (int a = 0; a < tiles.Count; a++)
+                        {
+                            if (tiles[a].Occupied)
+                            {
+                                if (tiles[a].objectOn == ControllersInGame[o].Crew[g])
+                                {
+                                    //reveal check and maybe rune
+                                    if(!cc.seenEnemies.Contains(ControllersInGame[o].Crew[g]))
+                                    {
+                                        cc.seenEnemies.Add(ControllersInGame[o].Crew[g]);
+                                    }
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }

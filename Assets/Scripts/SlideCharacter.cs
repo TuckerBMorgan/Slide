@@ -9,6 +9,7 @@ public class SlideCharacter : MonoBehaviour, Entity {
     private int actions;
     public  int Damage { get; set; }
     private Guid guid;
+    public Guid GUID { get { return guid; } }
     private int team;
     public int Team { get { return team; } }
     private int actionPoints;
@@ -22,6 +23,7 @@ public class SlideCharacter : MonoBehaviour, Entity {
     public SpellAction fallbackAction;
     public const int VisionRange = 3;
 
+    public GameObject Avatar;
     public Tile currentTile;
 
 	// Use this for initialization
@@ -45,10 +47,12 @@ public class SlideCharacter : MonoBehaviour, Entity {
 
     public void DrawInspector()
     {
+        /*
         foreach(KeyValuePair<string, CharacterAction> actions in allowedActions)
         {
             actions.Value.DrawInspector();
         }
+         */
     }
     
     public void Setup(string name, int baseHealth, int baseArmour, int actions, Guid guid, int Team)
@@ -154,5 +158,17 @@ public class SlideCharacter : MonoBehaviour, Entity {
     {
         return currentTile;
     }
+    public void MoveCharacter(Tile endTile ,System.Action action)
+    {
+        if(Avatar != null)
+        {
+            Avatar.GetComponent<CharacterMovementController>().SetMoveTargetAndGo(endTile, action);
+        }
+        else
+        {
+            action();
+        }
+    }
+
 }
 

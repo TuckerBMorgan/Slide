@@ -28,8 +28,9 @@ public class Controller : MonoBehaviour
 
     protected SlideCharacter selectedCharacter;
     public SlideCharacter SelectedCharacter { get { return selectedCharacter; } }
-    
 
+
+    public HashSet<SlideCharacter> seenEnemies;
 
     void Awake()
     {

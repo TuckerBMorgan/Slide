@@ -30,6 +30,8 @@ public class Tile : MonoBehaviour, Entity {
 
     public Color keepColor;
 
+    public Entity objectOn;
+
     void Awake()
     {
         H = 0;
@@ -77,6 +79,11 @@ public class Tile : MonoBehaviour, Entity {
             rightClick = true;
         }
 
+    }
+
+    public void SetObjectOn(Entity on)
+    {
+        objectOn = on;
     }
 
     public string GetEntityType()

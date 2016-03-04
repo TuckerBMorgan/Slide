@@ -30,7 +30,7 @@ public class PlayerController : Controller
         AbilityButtonControl.Instance.ChangeSelectedCharacter(slide);
         GridController.DisplayMoveRange(selectedCharacter);
 
-        ConflictController.Instance.AddPulseMaterial(selectedCharacter.GetComponent<Renderer>());
+        ConflictController.Instance.AddPulseMaterial(selectedCharacter.Avatar.GetComponent<Renderer>());
     }
 
     public override void OnSecondaryAction(Entity entity)
