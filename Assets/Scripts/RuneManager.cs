@@ -198,7 +198,9 @@ public class RuneManager : MonoBehaviour
                 var grantAction = new GrantAction(sc.GetComponent<SlideCharacter>(), abilites[i]);
                 RuneManager.Singelton.ExecuteRune(grantAction);
             }
-            
+
+            var rr = new RevealRune(sc.GetComponent<SlideCharacter>(), team);
+            RuneManager.Singelton.ExecuteRune(rr);
             action();
         }
 
@@ -323,7 +325,7 @@ public class RuneManager : MonoBehaviour
 
         public override void Execute(System.Action action)
         {
-            mover.GetComponent<CharacterMovementController>().SetMoveTargetAndGo(endTile, action);
+            mover.Avatar.GetComponent<CharacterMovementController>().SetMoveTargetAndGo(endTile, action);
             startTile.Occupied = false;
             startTile.SetObjectOn(null);
             endTile.SetObjectOn(mover);
@@ -535,7 +537,7 @@ public class RuneManager : MonoBehaviour
         }
 
         public override void Execute(Action action)
-        {
+        {;
             if(EnityManager.Singleton.characters.ContainsKey(character.GUID))
             {
                 EnityManager.Singleton.avatars[character.GUID].SetActive(true);
@@ -546,13 +548,11 @@ public class RuneManager : MonoBehaviour
                 var go = Resources.Load("Prefabs/Sphere") as GameObject;
                 go = Instantiate(go);
                 go.transform.position = new Vector3(character.getCurrentTile().transform.position.x, 0, character.getCurrentTile().transform.position.z);
-
-                            
+                go.GetComponent<CharacterMovementController>().controller = character;
                 var healthBar = Resources.Load("Prefabs/Health") as GameObject;
                 healthBar = Instantiate(healthBar);
                 healthBar.transform.parent = go.transform;  
                 healthBar.GetComponent<HealthBarController>().character = character;
-            
 
                 EnityManager.Singleton.characters.Add(character.GUID, character);
                 EnityManager.Singleton.avatars.Add(character.GUID, go);
@@ -577,4 +577,37 @@ public class RuneManager : MonoBehaviour
         }
     }
 
+    public class BoardState : Rune
+    {
+        public List<Tile> revealTiles;
+        public List<Tile> hideTiles;
+
+        public BoardState(List<Tile> revealTiles, List<Tile> hideTiles)
+        {
+            this.revealTiles = revealTiles;
+            this.hideTiles = hideTiles;
+        }
+
+        public override void Execute(Action action)
+        {
+            for(int i = revealTiles.Count; i >= 0;i--)
+            {
+                revealTiles[i].fog.SetActive(false);
+            }
+            for(int i = hideTiles.Count;i >= 0;i--)
+            {
+                hideTiles[i].fog.SetActive(true);
+            }
+        }
+
+        public override bool CanSeeRune(Controller cc)
+        {
+            return false;
+        }
+
+        public override void OnGUI()
+        {
+            
+        }
+    }
 }

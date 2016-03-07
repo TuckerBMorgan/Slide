@@ -30,6 +30,8 @@ public class Tile : MonoBehaviour, Entity {
 
     public Color keepColor;
 
+    public GameObject fog;
+
     public Entity objectOn;
 
     void Awake()

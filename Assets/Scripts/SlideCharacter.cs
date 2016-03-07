@@ -65,7 +65,7 @@ public class SlideCharacter : MonoBehaviour, Entity {
         moveAct.name = "Move";
         currentAction = moveAct;
         allowedActions.Add("Move", moveAct);
-
+        this.guid = guid;
         this.Health = baseHealth;
         this.Armour = baseArmour;
         actionPoints = actions;

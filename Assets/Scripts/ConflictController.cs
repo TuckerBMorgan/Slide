@@ -20,7 +20,6 @@ public class ConflictController : MonoBehaviour
 
     public int TurnOrder;
 
-
     public static ConflictController Instance;
 
     public UIController uicontroller;
@@ -59,14 +58,6 @@ public class ConflictController : MonoBehaviour
 
         AbilityButtonControl.Instance.ChangeSelectedCharacter(CurrentController.Crew[0]);
 
-
-        SlideCharacter cs = CurrentController.Crew[0];
-        SlideCharacter sc2 = ControllersInGame[1].Crew[0];
-        List<Tile> tiles = GridController.Singelton.Bresenhams(cs.getCurrentTile(), sc2.getCurrentTile());
-        for (int i = 0; i < tiles.Count; i++)
-        {
-            tiles[i].transform.position += new Vector3(0, 20, 0);
-        }
 
         /*
         ControllersInGame =  new List<Controller>();
@@ -157,6 +148,20 @@ public class ConflictController : MonoBehaviour
 
     private void PreformVisionCheck()
     {
+
+
+        Tile[][] grid = GridController.Singelton.GetGrid();
+
+        
+        for (int x = 0; x < grid.Length; x++)
+        {
+            for (int y = 0; y < grid[0].Length; y++)
+            {
+
+            }
+        }
+
+
         List<Tile> tiles = new List<Tile>();
 
         for (int i = 0; i < ControllersInGame.Count; i++)

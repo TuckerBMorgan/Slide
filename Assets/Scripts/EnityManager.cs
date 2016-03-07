@@ -14,6 +14,8 @@ public class EnityManager : MonoBehaviour {
     public void Awake()
     {
         Singleton = this;
+        characters = new Dictionary<Guid, SlideCharacter>();
+        avatars = new Dictionary<Guid, GameObject>();
     }
 
 }

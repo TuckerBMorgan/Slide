@@ -5,6 +5,7 @@ public class CharacterMovementController : MonoBehaviour{
     
     private MovementState currentMovementState;
     public string MoveState;
+    public SlideCharacter controller;
 
     public static float Epsilon = 0.003f;
 
@@ -102,7 +103,7 @@ public class CharacterMovementController : MonoBehaviour{
                     if (_distance <= Epsilon)
                     {
                         CharacterMovementController.transform.position = new Vector3(_currentTargetTile.X, 0, _currentTargetTile.Y);
-                        CharacterMovementController.GetComponent<SlideCharacter>().SetTile(_currentTargetTile);
+                        CharacterMovementController.controller.SetTile(_currentTargetTile);
                         _currentTargetTile = null;
                         if (_path.Count == 0)
                         {
